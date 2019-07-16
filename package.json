@@ -1,1 +1,48 @@
-{"name": "@showr/core","version": "0.2.0"}
+{
+  "name": "@showr/core",
+  "version": "0.3.0",
+  "description": "Core library for Showr",
+  "main": "build/index.js",
+  "scripts": {
+    "test": "jest",
+    "coverage": "jest --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pratikgaloria/showr-core"
+  },
+  "author": "Pratik Galoria <pratik.d.galoria@gmail.com> (https://github.com/pratikgaloria)",
+  "bugs": {
+    "url": "https://github.com/pratikgaloria/showr-core/issues"
+  },
+  "homepage": "https://github.com/pratikgaloria/showr-core",
+  "keywords": [
+    "stocks",
+    "trading",
+    "broker",
+    "finance",
+    "algorithm",
+    "market",
+    "streaming",
+    "bse",
+    "nse",
+    "library"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.5",
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
+    "@babel/polyfill": "^7.4.4",
+    "@babel/preset-env": "^7.4.5",
+    "babel-loader": "^8.0.6",
+    "babel-preset-minify": "^0.5.0",
+    "file-loader": "^4.0.0",
+    "jest": "^24.8.0",
+    "prettier": "^1.18.2",
+    "prettier-webpack-plugin": "^1.2.0",
+    "url-loader": "^2.0.0",
+    "webpack": "^4.34.0",
+    "webpack-cli": "^3.3.4"
+  }
+}
