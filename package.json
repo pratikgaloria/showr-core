@@ -1,6 +1,6 @@
 {
   "name": "@showr/core",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Core library for Showr",
   "main": "build/index.js",
   "scripts": {
