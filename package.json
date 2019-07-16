@@ -1,11 +1,13 @@
 {
   "name": "@showr/core",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Core library for Showr",
   "main": "build/index.js",
   "scripts": {
+    "build": "webpack",
     "test": "jest",
-    "coverage": "jest --coverage"
+    "coverage": "jest --coverage",
+    "prepare": "npm run build"
   },
   "repository": {
     "type": "git",
