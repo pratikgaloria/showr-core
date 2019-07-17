@@ -1,11 +1,10 @@
-class ShowrCore {
-  constructor() {
-    console.log("library constructor loaded.");
-  }
+const defaultAwesomeFunction = (name) => {
+  const returnStr = `I am the Default Awesome Function, fellow comrade! - ${name}`;
+  return returnStr;
+};
 
-  exec = () => {
-    console.log("exec called.");
-  };
-}
+const awesomeFunction = () => 'I am just an Awesome Function';
 
-export default ShowrCore;
+export default defaultAwesomeFunction;
+
+export { awesomeFunction };
