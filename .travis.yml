@@ -4,4 +4,4 @@ node_js:
 install:
   - npm install
 script:
-- npm run test -- --coverage --passWithNoTests
+- jest --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage

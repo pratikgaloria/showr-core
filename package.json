@@ -1,6 +1,6 @@
 {
   "name": "@showr/core",
-  "version": "0.9.1",
+  "version": "1.0.0",
   "description": "Core library for Showr",
   "main": "build/index.js",
   "scripts": {
@@ -8,7 +8,7 @@
     "coverage": "jest --coverage",
     "lint": "eslint src",
     "prepare": "npm run build",
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "repository": {
     "type": "git",
