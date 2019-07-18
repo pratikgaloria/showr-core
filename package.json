@@ -8,7 +8,8 @@
     "coverage": "jest --coverage",
     "lint": "eslint src",
     "prepare": "npm run build",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "test:build": "jest --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
   },
   "repository": {
     "type": "git",
