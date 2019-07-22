@@ -55,7 +55,7 @@ const point = {
   close: 150,
 };
 
-// To calculate a simple moving average for a given Point over the last 3 periods.
-console.log(SMA.set({ period: 3}).value(point, dataset)); // 145
+// Calculate SMA (Simple Moving Average) for a given Point over last 3 periods.
+console.log(SMA.set({ period: 3 }).value(point, dataset)); // 145
 
 ```
