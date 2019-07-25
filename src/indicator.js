@@ -5,10 +5,6 @@ class Indicator {
     this.execute = execute;
   }
 
-  get value() {
-    return this.execute;
-  }
-
   set(options) {
     this.options = {
       ...this.options,
