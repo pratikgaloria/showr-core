@@ -1,7 +1,7 @@
 import Indicator from '../indicator';
 import { symbols } from '../utils/symbols';
 
-const SMA = new Indicator('SMA', { period: 5, attribute: symbols.CLOSE }, function execute(
+const SMA = new Indicator('SMA', { period: 5, attribute: symbols.CLOSE }, function calculate(
   quote,
   dataset,
 ) {

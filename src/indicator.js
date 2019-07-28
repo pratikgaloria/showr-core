@@ -1,8 +1,8 @@
 class Indicator {
-  constructor(name, options, execute) {
+  constructor(name, options, calculate) {
     this.name = name;
     this.options = options;
-    this.execute = execute;
+    this.calculate = calculate;
   }
 
   set(options) {

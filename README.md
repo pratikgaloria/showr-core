@@ -12,11 +12,10 @@ Showr: Open source JavaScript library to generate technical indicators over stoc
 
 ### Indicators
 
-Each Indicator is a function accepting below parameters:
+Each Indicator has an `calculate` function to calculate the value, it accepts below parameters:
 
-1. `point`: OHLC data point for which you need to generate an Indicator
-2. `dataset`: Historical dataset consisting OHLC data points.
-3. `options`: Other options for an indicator. For example, range, period etc.
+1. `quote`: OHLC quote for which you need to generate an Indicator
+2. `dataset`: Historical dataset consist of one or more OHLC quotes.
 
 Example:
 
@@ -30,7 +29,7 @@ import { SMA } from '@showr/core/indicators';
 
 ```JavaScript
 // Historical dataset
-const dataset = [{
+const dataset = new Dataset([{
   timestamp: '07/20/2019T09:30:00Z',
   open: 142,
   high: 145,
@@ -42,18 +41,18 @@ const dataset = [{
   high: 150,
   low: 130,
   close: 145,
-}];
+}]);
 
 // Latest point
-const point = {
+const quote = new Quote({
   timestamp: '07/22/2019T09:30:00Z',
   open: 145,
   high: 160,
   low: 140,
   close: 150,
-};
+});
 
 // Calculate SMA (Simple Moving Average) for a given Point over last 3 periods.
-console.log(SMA(point, dataset, { period: 3 })); // 145
+console.log(SMA.calculate(quote, dataset)); // 145
 
 ```

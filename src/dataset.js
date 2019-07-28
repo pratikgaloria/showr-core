@@ -16,7 +16,7 @@ class Dataset {
     indicators.forEach((indicator) => {
       if (indicator instanceof Indicator) {
         self.forEach(quote => Object.assign(quote, {
-          [indicator.name]: indicator.execute(quote, self),
+          [indicator.name]: indicator.calculate(quote, self),
         }));
       }
 

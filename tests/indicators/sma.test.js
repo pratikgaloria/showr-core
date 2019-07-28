@@ -30,7 +30,7 @@ describe('Indicators: SMA', () => {
     const quote = new Quote({ [symbols.CLOSE]: 20 });
     const expectedValue = 16;
 
-    expect(SMA.execute(quote, dataset5)).toBe(expectedValue);
+    expect(SMA.calculate(quote, dataset5)).toBe(expectedValue);
   });
 
   it('Should return the same value as attribute if dataset has fewer points than range.', () => {
@@ -51,7 +51,7 @@ describe('Indicators: SMA', () => {
     const quote = new Quote({ [symbols.CLOSE]: 20 });
     const expectedValue = 20;
 
-    expect(SMA.execute(quote, dataset)).toBe(expectedValue);
+    expect(SMA.calculate(quote, dataset)).toBe(expectedValue);
   });
 
   it('Should return a valid value if dataset points are as equal as range.', () => {
@@ -76,14 +76,14 @@ describe('Indicators: SMA', () => {
     const quote = new Quote({ [symbols.CLOSE]: 20 });
     const expectedValue = 14.4;
 
-    expect(SMA.execute(quote, dataset)).toBe(expectedValue);
+    expect(SMA.calculate(quote, dataset)).toBe(expectedValue);
   });
 
   it('Should return a valid value for a given period.', () => {
     const quote = new Quote({ [symbols.CLOSE]: 20 });
     const expectedValue = 18;
 
-    expect(SMA.set({ period: 3 }).execute(quote, dataset5)).toBe(expectedValue);
+    expect(SMA.set({ period: 3 }).calculate(quote, dataset5)).toBe(expectedValue);
   });
 
   it('Should return a valid value for any given attribute', () => {
@@ -100,7 +100,7 @@ describe('Indicators: SMA', () => {
     const quote = new Quote({ [symbols.HIGH]: 14 });
     const expectedValue = 12;
 
-    expect(SMA.set({ period: 3, attribute: [symbols.HIGH] }).execute(quote, dataset)).toBe(
+    expect(SMA.set({ period: 3, attribute: [symbols.HIGH] }).calculate(quote, dataset)).toBe(
       expectedValue,
     );
   });
@@ -108,6 +108,6 @@ describe('Indicators: SMA', () => {
   it('Should return NaN if attribute is not present', () => {
     const quote = new Quote({ [symbols.HIGH]: 20 });
 
-    expect(SMA.execute(quote, dataset5)).toBeNaN();
+    expect(SMA.calculate(quote, dataset5)).toBeNaN();
   });
 });
