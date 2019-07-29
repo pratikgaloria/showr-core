@@ -1,9 +1,11 @@
+import errors from './utils/errors';
+
 class Quote {
   constructor(object) {
-    this.value = object;
-
-    if (object instanceof Array) {
-      throw new Error('Array is not allowed as a Quote value. Please refer documentation of Quote.');
+    if ((!object && object !== 0) || object instanceof Array) {
+      throw new Error(errors.invalidQuoteValue);
+    } else {
+      this.value = object;
     }
   }
 }

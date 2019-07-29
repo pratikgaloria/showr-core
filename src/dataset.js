@@ -1,12 +1,13 @@
 import Quote from './quote';
 import Indicator from './indicator';
+import errors from './utils/errors';
 
 class Dataset {
   constructor(object) {
-    this.value = [];
-
     if (object instanceof Array) {
       this.value = object.map(quote => new Quote(quote));
+    } else {
+      this.value = new Array(new Quote(object));
     }
   }
 
@@ -15,12 +16,12 @@ class Dataset {
 
     indicators.forEach((indicator) => {
       if (indicator instanceof Indicator) {
-        self.forEach(quote => Object.assign(quote, {
+        self.value.forEach(quote => Object.assign(quote, {
           [indicator.name]: indicator.calculate(quote, self),
         }));
+      } else {
+        throw new Error(errors.invalidIndicator);
       }
-
-      throw new Error('Not a valid Indicator.');
     });
 
     return self;
