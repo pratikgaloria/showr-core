@@ -1,4 +1,4 @@
-class Indicator {
+export class Indicator {
   constructor(name, options, calculate) {
     this.name = name;
     this.options = options;
@@ -14,5 +14,3 @@ class Indicator {
     return this;
   }
 }
-
-export default Indicator;

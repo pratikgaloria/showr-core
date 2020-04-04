@@ -1,4 +1,4 @@
-class Algorithm {
+export class Algorithm {
   constructor(name, entry, exit) {
     this.name = name;
     this.entry = entry;
@@ -19,5 +19,3 @@ class Algorithm {
     return 'hold';
   }
 }
-
-export default Algorithm;

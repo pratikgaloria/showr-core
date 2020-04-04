@@ -1,9 +1,9 @@
-import Quote from './quote';
-import Indicator from './indicator';
-import Algorithm from './algorithm';
+import { Quote } from './quote';
+import { Indicator } from './indicator';
+import { Algorithm } from './algorithm';
 import errors from './utils/errors';
 
-class Dataset {
+export class Dataset {
   constructor(object) {
     if (object instanceof Array) {
       this.value = object.map(quote => new Quote(quote));
@@ -15,11 +15,13 @@ class Dataset {
   apply(...indicators) {
     const self = this;
 
-    indicators.forEach((indicator) => {
+    indicators.forEach(indicator => {
       if (indicator instanceof Indicator) {
-        self.value.forEach(quote => Object.assign(quote, {
-          [indicator.name]: indicator.calculate(quote, self),
-        }));
+        self.value.forEach(quote =>
+          Object.assign(quote, {
+            [indicator.name]: indicator.calculate(quote, self),
+          })
+        );
       } else {
         throw new Error(errors.invalidIndicator);
       }
@@ -31,14 +33,16 @@ class Dataset {
   backtest(...algorithms) {
     const self = this;
 
-    algorithms.forEach((algorithm) => {
+    algorithms.forEach(algorithm => {
       if (algorithm instanceof Algorithm) {
-        self.value.forEach(quote => Object.assign(quote, {
-          backtest: {
-            ...quote.backtest,
-            [algorithm.name]: algorithm.execute(quote, self),
-          },
-        }));
+        self.value.forEach(quote =>
+          Object.assign(quote, {
+            backtest: {
+              ...quote.backtest,
+              [algorithm.name]: algorithm.execute(quote, self),
+            },
+          })
+        );
       } else {
         throw new Error(errors.invalidAlgorithm);
       }
@@ -47,5 +51,3 @@ class Dataset {
     return self;
   }
 }
-
-export default Dataset;

@@ -1,7 +1,7 @@
-import Indicator from '../indicator';
+import { Indicator } from '../indicator';
 import { symbols } from '../utils/symbols';
 
-const SMA = new Indicator('SMA', { period: 5, attribute: symbols.CLOSE }, function calculate(
+export const SMA = new Indicator('SMA', { period: 5, attribute: symbols.CLOSE }, function calculate(
   quote,
   dataset,
 ) {
@@ -23,5 +23,3 @@ const SMA = new Indicator('SMA', { period: 5, attribute: symbols.CLOSE }, functi
 
   return total / period;
 });
-
-export default SMA;

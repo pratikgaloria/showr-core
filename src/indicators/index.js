@@ -1,1 +1,1 @@
-export SMA from './sma';
+export { SMA } from './sma';

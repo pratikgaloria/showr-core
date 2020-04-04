@@ -1,6 +1,6 @@
 import errors from './utils/errors';
 
-class Quote {
+export class Quote {
   constructor(object) {
     if ((!object && object !== 0) || object instanceof Array) {
       throw new Error(errors.invalidQuoteValue);
@@ -9,5 +9,3 @@ class Quote {
     }
   }
 }
-
-export default Quote;
