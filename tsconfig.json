@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "node",
+    "target": "es5",
+    "declaration": true,
+    "outDir": "./build",
+    "sourceMap": true,
+    "lib": ["esnext"],
+    "noImplicitAny": false,
+    "strict": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": false,
+    "baseUrl": "src",
+    "esModuleInterop": true,
+    "resolveJsonModule": true
+  },
+  "include": [
+    "src/**/*.ts",
+  ],
+  "exclude": ["node_modules", "tests"]
+}

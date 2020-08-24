@@ -3,11 +3,13 @@
   "version": "1.2.0",
   "description": "Core library for Showr",
   "main": "build/index.js",
+  "types": "build/index.d.ts",
   "scripts": {
-    "build": "cross-env BABEL_ENV=production babel src --out-dir build",
+    "build": "tsc",
     "prepare": "npm run build",
-    "test": "jest --coverage",
-    "test:build": "jest --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
+    "test": "jest --coverage --no-cache",
+    "test:build": "jest --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
+    "docs:generate": "typedoc --options ./typedoc.js"
   },
   "repository": {
     "type": "git",
@@ -24,6 +26,8 @@
     "broker",
     "finance",
     "algorithm",
+    "backtest",
+    "indicators",
     "market",
     "streaming",
     "bse",
@@ -35,10 +39,47 @@
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.0",
     "@babel/preset-env": "^7.9.0",
+    "@types/jest": "^25.2.1",
+    "@types/jsonfile": "^6.0.0",
+    "@types/node": "^13.11.0",
     "babel-loader": "^8.1.0",
     "coveralls": "^3.0.11",
     "cross-env": "^5.2.1",
-    "jest": "^24.9.0",
-    "prettier": "^1.19.1"
+    "husky": "^4.2.5",
+    "jest": "^25.2.7",
+    "lint-staged": "^10.2.11",
+    "prettier": "^1.19.1",
+    "ts-jest": "^25.3.1",
+    "tslint": "^6.1.3",
+    "typedoc": "^0.18.0"
+  },
+  "dependencies": {
+    "typescript": "^3.8.3"
+  },
+  "jest": {
+    "roots": [
+      "<rootDir>/src"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest"
+    },
+    "testMatch": [
+      "**/__tests__/**/*.+(ts|tsx|js)",
+      "**/?(*.)+(spec|test).+(ts|tsx|js)"
+    ],
+    "modulePaths": [
+      "<rootDir>/src"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.ts": [
+      "tslint --project tsconfig.json --fix",
+      "prettier --single-quote --write"
+    ]
   }
 }
