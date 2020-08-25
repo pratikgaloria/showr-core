@@ -1,17 +1,17 @@
 {
   "compilerOptions": {
-    "module": "esnext",
+    "module": "commonjs",
     "moduleResolution": "node",
-    "target": "ES5",
+    "target": "ES2015",
     "declaration": true,
-    "outDir": "./build",
-    "sourceMap": true,
+    "outDir": "./dist",
+    "sourceMap": false,
     "lib": ["esnext"],
     "noImplicitAny": false,
     "strict": true,
     "strictNullChecks": true,
+    "rootDir": "src",
     "noUnusedLocals": false,
-    "baseUrl": "src",
     "esModuleInterop": true,
     "resolveJsonModule": true
   },

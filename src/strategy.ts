@@ -1,8 +1,12 @@
-import { Quote } from './quote';
-import { Dataset } from './dataset';
-import { Indicator } from './indicator';
+import {
+  Quote,
+  Dataset,
+  Indicator,
+  Backtest,
+  BacktestConfiguration,
+  BacktestReport,
+} from './';
 import { PositionType } from './position';
-import { Backtest, BacktestConfiguration, BacktestReport } from 'backtest';
 
 /**
  * Defines a strategy that can be back-tested.

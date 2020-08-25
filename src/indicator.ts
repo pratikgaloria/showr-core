@@ -1,5 +1,4 @@
-import { Dataset } from './dataset';
-import { Quote } from './quote';
+import { Dataset, Quote } from './';
 
 export interface IndicatorOptions {
   [key: string]: any;

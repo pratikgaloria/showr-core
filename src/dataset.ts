@@ -1,6 +1,5 @@
-import { Quote } from './quote';
-import { Indicator } from './indicator';
-import { Keys } from 'enums/symbols';
+import { Quote, Indicator } from './';
+import { Keys } from './enums/symbols';
 
 /**
  * Creates a dataset out of data, where data is an array of any numeric values.

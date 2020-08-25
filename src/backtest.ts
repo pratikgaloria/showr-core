@@ -1,7 +1,5 @@
-import { Dataset } from './dataset';
-import { Quote } from './quote';
-import { PositionType, Position } from './position';
-import { Strategy } from './strategy';
+import { Dataset, Quote, Position, Strategy } from './';
+import { PositionType } from './position';
 
 export interface BacktestConfiguration {
   capital: number;
