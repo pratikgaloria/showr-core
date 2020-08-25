@@ -1,14 +1,14 @@
 {
   "name": "@showr/core",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Core library for Showr",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "scripts": {
-    "build": "rm -r build && tsc",
+    "build": "rm -rf build && tsc",
     "prepare": "npm run build",
     "test": "jest --coverage --no-cache",
-    "test:build": "jest --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
+    "test:build": "jest __tests__ --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "docs:generate": "typedoc --options ./typedoc.js",
     "lint": "tslint --project tsconfig.json"
   },
@@ -60,16 +60,10 @@
     "typescript": "^3.8.3"
   },
   "jest": {
+    "testEnvironment": "node",
     "transform": {
       "^.+\\.(ts|tsx)$": "ts-jest"
     },
-    "testPathIgnorePatterns": [
-      "/node_modules/",
-      "/build/"
-    ],
-    "testMatch": [
-      "**/__tests__/**/*.+(ts|tsx|js)"
-    ],
     "modulePaths": [
       "<rootDir>/src"
     ]
