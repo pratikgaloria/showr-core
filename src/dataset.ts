@@ -6,14 +6,14 @@ import { Keys } from 'enums/symbols';
  * Creates a dataset out of data, where data is an array of any numeric values.
  */
 export class Dataset {
-  protected _value: Array<Quote>;
+  protected _value: Quote[];
 
   /**
    * Creates a dataset after type-casting given data values to quotes.
    * @param data - Array of `any` type of values or `Quote`.
    * @param [symbol] - If provided, each array item will be converted into a { key: value } pair where `key` would be a given symbol.
    */
-  constructor(data?: Array<any>, key?: string) {
+  constructor(data?: any[], key?: string) {
     if (data) {
       this._value = data.map(d => {
         if (d instanceof Quote) {

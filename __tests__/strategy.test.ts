@@ -1,5 +1,5 @@
-import { Strategy, Indicator, Dataset, Quote } from '../';
-import { SMA } from 'indicators';
+import { Strategy, Indicator, Dataset, Quote } from '../src';
+import { SMA } from '../src/indicators';
 
 describe('Strategy', () => {
   describe('constructor', () => {

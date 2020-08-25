@@ -1,5 +1,4 @@
-import { Indicator } from '../indicator';
-import { Dataset } from '../dataset';
+import { Indicator, Dataset } from '../src';
 
 describe('Indicator', () => {
   describe('constructor', () => {

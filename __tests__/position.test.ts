@@ -1,4 +1,4 @@
-import { Position } from '../position';
+import { Position } from '../src';
 
 describe('Position', () => {
   describe('constructor', () => {

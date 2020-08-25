@@ -1,4 +1,4 @@
-import { Dataset, Quote, Indicator } from '../';
+import { Dataset, Quote, Indicator } from '../src';
 
 describe('Quote', () => {
   describe('constructor', () => {

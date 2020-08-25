@@ -1,5 +1,5 @@
-import { Dataset, Quote, Indicator } from '../';
-import { Keys } from 'enums/symbols';
+import { Dataset, Quote, Indicator } from '../src';
+import { Keys } from '../src/enums/symbols';
 
 describe('Dataset', () => {
   describe('constructor', () => {

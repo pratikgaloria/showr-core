@@ -1,5 +1,5 @@
-import { tryParseFloat } from '../utils/numbers';
-import { getAllUniqueSubsets } from 'utils/helpers';
+import { tryParseFloat } from '../src/utils/numbers';
+import { getAllUniqueSubsets } from '../src/utils/helpers';
 
 describe('Utils', () => {
   describe('Numbers', () => {

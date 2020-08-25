@@ -1,6 +1,5 @@
-import { Backtest, Strategy, Quote, Dataset } from '../';
-import { SMA } from '../indicators/sma';
-import { BacktestReport } from 'backtest';
+import { Backtest, BacktestReport, Strategy, Quote, Dataset } from '../src';
+import { SMA } from '../src/indicators';
 
 describe('Backtest', () => {
   const dataset = new Dataset([20, 25, 22, 28, 35, 30, 25, 18, 15]);

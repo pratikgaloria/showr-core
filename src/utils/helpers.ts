@@ -1,8 +1,8 @@
-export const getAllUniqueSubsets = (array: Array<any>): Array<Array<any>> =>
+export const getAllUniqueSubsets = (array: any[]): any[][] =>
   array
     .reduce(
       (subsets, value) =>
-        subsets.concat(subsets.map((set: Array<any>) => [value, ...set])),
+        subsets.concat(subsets.map((set: any[]) => [value, ...set])),
       [[]]
     )
-    .filter((item: Array<any>) => item.length);
+    .filter((item: any[]) => item.length);
