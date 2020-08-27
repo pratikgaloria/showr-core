@@ -1,6 +1,6 @@
 {
   "name": "@showr/core",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "Core library for Showr",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -57,12 +57,14 @@
     "typedoc": "^0.18.0"
   },
   "dependencies": {
+    "csvtojson": "^2.0.10",
     "typescript": "^3.8.3"
   },
   "jest": {
     "testEnvironment": "node",
+    "testRegex": "__tests__.*.(test|spec).ts$",
     "transform": {
-      "^.+\\.(ts|tsx)$": "ts-jest"
+      "^.+\\.ts$": "ts-jest"
     },
     "modulePaths": [
       "<rootDir>/src"

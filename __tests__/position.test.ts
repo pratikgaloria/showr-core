@@ -6,9 +6,7 @@ describe('Position', () => {
       const position = new Position('idle');
 
       expect(position).toHaveProperty('value');
-      expect(position.value).toStrictEqual({
-        position: 'idle',
-      });
+      expect(position.value).toBe('idle');
     });
   });
 
@@ -18,22 +16,22 @@ describe('Position', () => {
         it('and new position is entry', () => {
           const position = new Position('idle');
           position.update('entry');
-          expect(position.value.position).toBe('entry');
+          expect(position.value).toBe('entry');
         });
 
         it('and new position is other than entry', () => {
           const position = new Position('idle');
           position.update('idle');
-          expect(position.value.position).toBe('idle');
+          expect(position.value).toBe('idle');
 
           position.update('exit');
-          expect(position.value.position).toBe('idle');
+          expect(position.value).toBe('idle');
 
           position.update('hold');
-          expect(position.value.position).toBe('idle');
+          expect(position.value).toBe('idle');
 
           position.update();
-          expect(position.value.position).toBe('idle');
+          expect(position.value).toBe('idle');
         });
       });
 
@@ -41,25 +39,25 @@ describe('Position', () => {
         it('and new position is exit', () => {
           const position = new Position('entry');
           position.update('exit');
-          expect(position.value.position).toBe('exit');
+          expect(position.value).toBe('exit');
         });
 
         it('and new position is other than exit', () => {
           let position = new Position('entry');
           position.update('idle');
-          expect(position.value.position).toBe('hold');
+          expect(position.value).toBe('hold');
 
           position = new Position('entry');
           position.update('entry');
-          expect(position.value.position).toBe('hold');
+          expect(position.value).toBe('hold');
 
           position = new Position('entry');
           position.update('hold');
-          expect(position.value.position).toBe('hold');
+          expect(position.value).toBe('hold');
 
           position = new Position('entry');
           position.update();
-          expect(position.value.position).toBe('hold');
+          expect(position.value).toBe('hold');
         });
       });
 
@@ -67,25 +65,25 @@ describe('Position', () => {
         it('and new position is exit', () => {
           const position = new Position('hold');
           position.update('exit');
-          expect(position.value.position).toBe('exit');
+          expect(position.value).toBe('exit');
         });
 
         it('and new position is other than exit', () => {
           let position = new Position('hold');
           position.update('idle');
-          expect(position.value.position).toBe('hold');
+          expect(position.value).toBe('hold');
 
           position = new Position('hold');
           position.update('entry');
-          expect(position.value.position).toBe('hold');
+          expect(position.value).toBe('hold');
 
           position = new Position('hold');
           position.update('hold');
-          expect(position.value.position).toBe('hold');
+          expect(position.value).toBe('hold');
 
           position = new Position('hold');
           position.update();
-          expect(position.value.position).toBe('hold');
+          expect(position.value).toBe('hold');
         });
       });
 
@@ -93,25 +91,25 @@ describe('Position', () => {
         it('and new position is entry', () => {
           const position = new Position('exit');
           position.update('entry');
-          expect(position.value.position).toBe('entry');
+          expect(position.value).toBe('entry');
         });
 
         it('and new position is other than entry', () => {
           let position = new Position('exit');
           position.update('idle');
-          expect(position.value.position).toBe('idle');
+          expect(position.value).toBe('idle');
 
           position = new Position('exit');
           position.update('exit');
-          expect(position.value.position).toBe('idle');
+          expect(position.value).toBe('idle');
 
           position = new Position('exit');
           position.update('hold');
-          expect(position.value.position).toBe('idle');
+          expect(position.value).toBe('idle');
 
           position = new Position('exit');
           position.update();
-          expect(position.value.position).toBe('idle');
+          expect(position.value).toBe('idle');
         });
       });
     });

@@ -6,9 +6,7 @@ class Position {
         this._type = type;
     }
     get value() {
-        return {
-            position: this._type,
-        };
+        return this._type;
     }
     update(newPosition) {
         if (this._type === 'idle') {

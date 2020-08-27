@@ -8,12 +8,20 @@ import {
 } from './';
 import { PositionType } from './position';
 
+export class StrategyPoint {
+  position: PositionType | undefined;
+
+  constructor(position: PositionType | undefined) {
+    this.position = position;
+  }
+}
+
 /**
  * Defines a strategy that can be back-tested.
  */
 export class Strategy {
   protected _name: string;
-  protected _define: (quote: Quote) => PositionType | undefined;
+  protected _define: (quote: Quote) => StrategyPoint | undefined;
   protected _indicators: Indicator[];
 
   /**
@@ -24,7 +32,7 @@ export class Strategy {
    */
   constructor(
     name: string,
-    define: (quote: Quote) => PositionType | undefined,
+    define: (quote: Quote) => StrategyPoint | undefined,
     indicators: Indicator[]
   ) {
     this._name = name;
@@ -41,9 +49,9 @@ export class Strategy {
   }
 
   /**
-   * Applies the strategy over a given quote and returns the position.
+   * Applies the strategy over a given quote and returns the strategy values.
    * @param quote - `Quote` on which strategy should be applied.
-   * @returns `PositionType`.
+   * @returns `StrategyPoint`.
    */
   apply(quote: Quote) {
     return this._define(quote);

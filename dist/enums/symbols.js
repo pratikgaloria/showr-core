@@ -11,4 +11,5 @@ var EnumSymbols;
 var Keys;
 (function (Keys) {
     Keys["indicators"] = "indicators";
+    Keys["strategies"] = "strategies";
 })(Keys = exports.Keys || (exports.Keys = {}));

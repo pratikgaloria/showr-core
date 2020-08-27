@@ -1,5 +1,6 @@
 import { EnumSymbols, Keys } from './enums/symbols';
 import { tryParseFloat } from './utils/numbers';
+import { StrategyPoint } from './strategy';
 
 export type TQuote = {
   [key: string]: any;
@@ -52,18 +53,64 @@ export class Quote {
   }
 
   /**
+   * Get value of the given attribute of the quote.
+   * @param attribute - The attribute.
+   * @returns The value of given attribute if exists, `undefined` otherwise.
+   */
+  getAttribute(attribute: string) {
+    return Object.prototype.hasOwnProperty.call(this._value, attribute)
+      ? this._value[attribute]
+      : undefined;
+  }
+
+  /**
+   * Get all indicator values.
+   * @returns `indicators` object of the `Quote` if exists, blank object otherwise.
+   */
+  getIndicators() {
+    return Object.prototype.hasOwnProperty.call(this._value, Keys.indicators)
+      ? this._value[Keys.indicators]
+      : {};
+  }
+
+  /**
    * Get quote indicator value by indicator name.
    * @param indicatorName - Name of the `Indicator`.
    * @returns Value of indicator if exists, `undefined` otherwise.
    */
   getIndicator(indicatorName: string) {
     if (
-      this._value[Keys.indicators] &&
-      this._value[Keys.indicators][indicatorName]
+      Object.prototype.hasOwnProperty.call(this._value, Keys.indicators) &&
+      !!this._value[Keys.indicators][indicatorName]
     ) {
       return this._value[Keys.indicators][indicatorName];
     }
     return undefined;
+  }
+
+  /**
+   * Get strategy values for the given quote.
+   * @param strategyName - Name of the strategy.
+   * @returns `StrategyPoint` object if strategy exists, `undefined` otherwise.
+   */
+  getStrategy(strategyName: string) {
+    if (
+      Object.prototype.hasOwnProperty.call(this._value, Keys.strategies) &&
+      !!this._value[Keys.strategies][strategyName]
+    ) {
+      return this._value[Keys.strategies][strategyName] as StrategyPoint;
+    }
+    return undefined;
+  }
+
+  /**
+   * Get all strategy values.
+   * @returns `strategies` object of the `Quote` if exists, blank object otherwise.
+   */
+  getStrategies() {
+    return Object.prototype.hasOwnProperty.call(this._value, Keys.strategies)
+      ? this._value[Keys.strategies]
+      : {};
   }
 
   /**

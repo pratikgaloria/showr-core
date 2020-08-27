@@ -5,5 +5,6 @@ export declare enum EnumSymbols {
     close = "close"
 }
 export declare enum Keys {
-    indicators = "indicators"
+    indicators = "indicators",
+    strategies = "strategies"
 }

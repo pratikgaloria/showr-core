@@ -1,5 +1,5 @@
 export const tryParseFloat = (value: any) => {
-  if (isNaN(parseFloat(value))) {
+  if (typeof value === 'object' || isNaN(Number(value))) {
     return value;
   }
 

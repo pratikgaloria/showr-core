@@ -23,7 +23,9 @@ export class EMA extends Indicator {
         }
 
         const _smoothing = 2 / (period + 1);
-        const lastEMA = dataset.quotes[datasetLength - 2].value[this.name];
+        const lastEMA = dataset.quotes[datasetLength - 2].getIndicator(
+          this.name
+        );
         const value = dataset.quotes[datasetLength - 1].value[attribute];
 
         return value * _smoothing + lastEMA * (1 - _smoothing);

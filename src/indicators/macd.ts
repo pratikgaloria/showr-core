@@ -1,6 +1,6 @@
 import { Indicator, IndicatorOptions } from '../indicator';
 import { Dataset } from '../dataset';
-import { EnumSymbols } from '../enums/symbols';
+import { EnumSymbols, Keys } from '../enums/symbols';
 import { EMA } from './ema';
 
 interface IIndicatorOptionsMACD extends IndicatorOptions {
@@ -22,8 +22,8 @@ export class MACD extends Indicator {
         }
 
         return (
-          dataset.value[datasetLength - 1].ema12 -
-          dataset.value[datasetLength - 1].ema26
+          dataset.value[datasetLength - 1][Keys.indicators].ema12 -
+          dataset.value[datasetLength - 1][Keys.indicators].ema26
         );
       },
       options

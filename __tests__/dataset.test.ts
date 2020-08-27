@@ -1,5 +1,6 @@
 import { Dataset, Quote, Indicator } from '../src';
 import { Keys } from '../src/enums/symbols';
+import { sampleIndicatorFn } from './mocks/mock-data';
 
 describe('Dataset', () => {
   describe('constructor', () => {
@@ -62,8 +63,8 @@ describe('Dataset', () => {
     it('Should apply indicator to the dataset.', () => {
       const dataset = new Dataset([1]);
       const indicator = new Indicator(
-        'add2',
-        dataset => dataset.value[0].close + 2
+        'multi5',
+        sampleIndicatorFn
       );
 
       dataset.apply(indicator);
@@ -71,7 +72,7 @@ describe('Dataset', () => {
       expect(dataset.value).toHaveLength(1);
       expect(dataset.value[0]).toHaveProperty(Keys.indicators);
       expect(dataset.value).toStrictEqual([
-        { close: 1, [Keys.indicators]: { add2: 3 } },
+        { close: 1, [Keys.indicators]: { multi5: 5 } },
       ]);
     });
 

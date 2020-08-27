@@ -1,7 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Strategy = void 0;
+exports.Strategy = exports.StrategyPoint = void 0;
 const _1 = require("./");
+class StrategyPoint {
+    constructor(position) {
+        this.position = position;
+    }
+}
+exports.StrategyPoint = StrategyPoint;
 /**
  * Defines a strategy that can be back-tested.
  */
@@ -24,9 +30,9 @@ class Strategy {
         return this._indicators;
     }
     /**
-     * Applies the strategy over a given quote and returns the position.
+     * Applies the strategy over a given quote and returns the strategy values.
      * @param quote - `Quote` on which strategy should be applied.
-     * @returns `PositionType`.
+     * @returns `StrategyPoint`.
      */
     apply(quote) {
         return this._define(quote);

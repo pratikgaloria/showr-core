@@ -21,9 +21,9 @@ export declare class Indicator {
     get options(): IndicatorOptions | undefined;
     get calculate(): (dataset: Dataset) => number;
     /**
-     * Extends each quote of the dataset with a calculated indicator value and returns a new dataset.
+     * Mutates each quote of the given dataset with a calculated indicator value.
      * @param dataset - `Dataset`.
-     * @returns A new `Dataset`.
+     * @returns Mutated `Dataset`.
      */
     spread(dataset: Dataset): Dataset;
 }

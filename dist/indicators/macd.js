@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MACD = void 0;
 const indicator_1 = require("../indicator");
+const symbols_1 = require("../enums/symbols");
 const ema_1 = require("./ema");
 class MACD extends indicator_1.Indicator {
     constructor(options) {
@@ -10,8 +11,8 @@ class MACD extends indicator_1.Indicator {
             if (datasetLength === 1) {
                 return 0;
             }
-            return (dataset.value[datasetLength - 1].ema12 -
-                dataset.value[datasetLength - 1].ema26);
+            return (dataset.value[datasetLength - 1][symbols_1.Keys.indicators].ema12 -
+                dataset.value[datasetLength - 1][symbols_1.Keys.indicators].ema26);
         }, options);
         this._options = Object.assign({}, options);
         this._options.beforeCalculate = (dataset) => {

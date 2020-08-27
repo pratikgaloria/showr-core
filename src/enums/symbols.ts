@@ -7,4 +7,5 @@ export enum EnumSymbols {
 
 export enum Keys {
   indicators = 'indicators',
+  strategies = 'strategies',
 }

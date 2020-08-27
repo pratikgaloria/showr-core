@@ -1,4 +1,6 @@
 import { Indicator, Dataset } from '../src';
+import { Keys } from '../src/enums/symbols';
+import { sampleIndicatorFn } from './mocks/mock-data';
 
 describe('Indicator', () => {
   describe('constructor', () => {
@@ -36,38 +38,43 @@ describe('Indicator', () => {
 
   describe('Spread', () => {
     it('Should spread the indicator through-out the dataset', () => {
-      const ds = new Dataset([1, 2]);
+      const dataset = new Dataset([1, 2]);
       const multi5 = new Indicator(
         'multi5',
-        ds => ds.value[ds.value.length - 1].close * 5
+        sampleIndicatorFn
       );
 
-      const dsWithMulti5 = multi5.spread(ds);
-      expect(dsWithMulti5).toBeInstanceOf(Dataset);
-      expect(dsWithMulti5.value).toStrictEqual([
+      multi5.spread(dataset);
+
+      expect(dataset).toBeInstanceOf(Dataset);
+      expect(dataset.value).toStrictEqual([
         {
           close: 1,
-          multi5: 5,
+          [Keys.indicators]: {
+            'multi5': 5,
+          }
         },
         {
           close: 2,
-          multi5: 10,
+          [Keys.indicators]: {
+            'multi5': 10,
+          }
         },
       ]);
     });
 
     it('Should call beforeCalculate() if defined with options while spreading.', () => {
-      const ds = new Dataset([1, 2]);
+      const dataset = new Dataset([1, 2]);
       const mockBeforeCalculateFn = jest.fn();
       const multi5 = new Indicator(
         'multi5',
-        ds => ds.value[ds.value.length - 1].close * 5,
+        sampleIndicatorFn,
         {
           beforeCalculate: mockBeforeCalculateFn,
         }
       );
 
-      const dsWithMulti5 = multi5.spread(ds);
+      multi5.spread(dataset);
       expect(mockBeforeCalculateFn).toHaveBeenCalled();
     });
   });

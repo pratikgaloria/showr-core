@@ -1,4 +1,5 @@
 import { Dataset, Quote } from './';
+import { Keys } from './enums/symbols';
 
 export interface IndicatorOptions {
   [key: string]: any;
@@ -42,9 +43,9 @@ export class Indicator {
   }
 
   /**
-   * Extends each quote of the dataset with a calculated indicator value and returns a new dataset.
+   * Mutates each quote of the given dataset with a calculated indicator value.
    * @param dataset - `Dataset`.
-   * @returns A new `Dataset`.
+   * @returns Mutated `Dataset`.
    */
   spread(dataset: Dataset) {
     if (this.options && this.options.beforeCalculate) {
@@ -52,11 +53,14 @@ export class Indicator {
     }
 
     const emptyDataset = new Dataset();
-
     dataset.quotes.forEach((quote: Quote) => {
-      const quoteWithIndicator = quote.extend({
-        [this.name]: this.calculate(emptyDataset.add(quote)),
-      });
+      const quoteWithIndicator = quote.extend(
+        {
+          ...quote.getIndicators(),
+          [this.name]: this.calculate(emptyDataset.add(quote)),
+        },
+        Keys.indicators
+      );
 
       emptyDataset.update(quoteWithIndicator);
     });

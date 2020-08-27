@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Dataset = void 0;
 const _1 = require("./");
-const symbols_1 = require("./enums/symbols");
 /**
  * Creates a dataset out of data, where data is an array of any numeric values.
  */
@@ -55,10 +54,8 @@ class Dataset {
      * @returns self reference.
      */
     apply(...indicators) {
-        const emptyDataset = new Dataset();
-        this._value.forEach((quote) => {
-            emptyDataset.add(quote);
-            quote.extend(indicators.reduce((q, i) => (Object.assign(Object.assign({}, q), { [i.name]: i.calculate(emptyDataset) })), {}), symbols_1.Keys.indicators);
+        indicators.forEach(i => {
+            i.spread(this);
         });
         return this;
     }

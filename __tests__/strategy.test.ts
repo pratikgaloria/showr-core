@@ -1,12 +1,12 @@
-import { Strategy, Indicator, Dataset, Quote } from '../src';
+import { Strategy, Indicator, Dataset, Quote, BacktestReport } from '../src';
 import { SMA } from '../src/indicators';
+import { StrategyPoint } from '../src/strategy';
+import { sampleStrategy, sampleBacktest } from './mocks/mock-data';
 
 describe('Strategy', () => {
   describe('constructor', () => {
     it('Should create a valid Strategy object.', () => {
-      const strategy = new Strategy('new-strategy', (quote: Quote) => 'entry', [
-        new Indicator('sma', (ds: Dataset) => ds.value[0].close + 1),
-      ]);
+      const strategy = sampleStrategy('new-strategy');
 
       expect(strategy).toHaveProperty('name');
       expect(strategy.name).toBe('new-strategy');
@@ -39,32 +39,17 @@ describe('Strategy', () => {
 
   describe('backtest', () => {
     it('Should return a back-tested report over a given dataset for a given configuration.', () => {
-      const ds = new Dataset([20, 25, 22, 28, 35, 30, 25, 18, 15]);
-      const iSMA = new SMA({ name: 'sma2', period: 2 });
-      const strategy = new Strategy(
-        'new-strategy',
-        (quote: Quote) => {
-          const sma2 = quote.getIndicator('sma2');
+      const ds = new Dataset(sampleBacktest.dataset);
+      const strategy = sampleBacktest.strategy;
 
-          if (!!sma2 && sma2 > 25) {
-            return 'entry';
-          }
-          if (!!sma2 && sma2 < 25) {
-            return 'exit';
-          }
-        },
-        [iSMA]
+      const backtestReport = strategy.backtest(
+        ds,
+        sampleBacktest.configuration
       );
 
-      const backtestReport = strategy.backtest(ds, {
-        capital: 100,
-        tradingQuantity: 1,
-      });
-
-      expect(backtestReport.numberOfTrades).toBe(1);
-      expect(backtestReport.loss).toBe(17);
-      expect(backtestReport.return).toBe(-17);
-      expect(backtestReport.finalCapital).toBe(83);
+      expect(backtestReport).toEqual(
+        sampleBacktest.report
+      );
     });
   });
 });

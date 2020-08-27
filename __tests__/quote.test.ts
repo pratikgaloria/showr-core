@@ -1,4 +1,6 @@
-import { Dataset, Quote, Indicator } from '../src';
+import { Dataset, Quote, Indicator, Backtest } from '../src';
+import { StrategyPoint } from '../src/strategy';
+import { sampleIndicatorFn, sampleStrategy } from './mocks/mock-data';
 
 describe('Quote', () => {
   describe('constructor', () => {
@@ -69,23 +71,111 @@ describe('Quote', () => {
 
   describe('getIndicator', () => {
     it('Should return an indicator value if exists.', () => {
-      const ds = new Dataset([1, 2]);
+      const dataset = new Dataset([1, 2]);
       const multi5 = new Indicator(
         'multi5',
-        ds => ds.value[ds.value.length - 1].close * 5
+        sampleIndicatorFn
       );
 
-      ds.apply(multi5);
-      ds.quotes.forEach(async q => {
-        await expect(q.getIndicator('multi5')).toBeTruthy();
+      dataset.apply(multi5);
+      dataset.quotes.forEach(q => {
+        expect(q.getIndicator('multi5')).toBeTruthy();
       });
     });
 
     it("Should return undefined if indicator does't exists", () => {
       const ds = new Dataset([1, 2]);
 
-      ds.quotes.forEach(async q => {
-        await expect(q.getIndicator('multi5')).toBeUndefined();
+      ds.quotes.forEach(q => {
+        expect(q.getIndicator('multi5')).toBeUndefined();
+      });
+    });
+  });
+
+  describe('getIndicators', () => {
+    it('Should return indicators of the quote if exists.', () => {
+      const dataset = new Dataset([1, 2]);
+      const multi2 = new Indicator(
+        'multi2',
+        sampleIndicatorFn
+      );
+      const multi5 = new Indicator(
+        'multi5',
+        sampleIndicatorFn
+      );
+
+      dataset.apply(multi2, multi5);
+      dataset.quotes.forEach(q => {
+        const indicators = q.getIndicators();
+        expect(indicators).toHaveProperty('multi2');
+        expect(indicators).toHaveProperty('multi5');
+      });
+    });
+
+    it("Should return blank objects if indicators don't exists", () => {
+      const ds = new Dataset([1, 2]);
+
+      ds.quotes.forEach(q => {
+        expect(q.getIndicators()).toStrictEqual({});
+      });
+    });
+  });
+
+  describe('getAttribute', () => {
+    it('Should return attribute value if exists.', () => {
+      const dataset = new Dataset([{ open: 1 }, { open: 3 }]);
+
+      dataset.quotes.forEach(q => {
+        expect(q.getAttribute('open')).toBe(q.value.open);
+      });
+    });
+
+    it('Should return undefined if attribute doesn\'t exists.', () => {
+      const dataset = new Dataset([1, 2]);
+
+      dataset.quotes.forEach(q => {
+        expect(q.getAttribute('open')).toBeUndefined();
+      });
+    });
+  });
+
+  describe('getStrategy', () => {
+    it('Should return strategy point for if exists.', () => {
+      const dataset = new Dataset([1, 2]);
+      const strategy = sampleStrategy('new-strategy');
+      const backtest = new Backtest(dataset, strategy);
+
+      backtest.dataset.quotes.forEach(q => {
+        expect(q.getStrategy('new-strategy')).toBeInstanceOf(StrategyPoint);
+      })
+    });
+
+    it('Should return undefined if strategy doesn\'t exists.', () => {
+      const dataset = new Dataset([1, 2]);
+      
+      dataset.quotes.forEach(q => {
+        expect(q.getStrategy('new-strategy')).toBeUndefined();
+      })
+    });
+  });
+
+  describe('getStrategies', () => {
+    it('Should return strategies if exists.', () => {
+      const dataset = new Dataset([1, 2]);
+      const strategy = sampleStrategy('new-strategy');
+      const backtest = new Backtest(dataset, strategy);
+      
+      dataset.quotes.forEach(q => {
+        const strategies = q.getStrategies();
+        expect(strategies).toHaveProperty('new-strategy');
+      });
+    });
+
+    it("Should return blank objects if strategies don't exists", () => {
+      const ds = new Dataset([1, 2]);
+
+      ds.quotes.forEach(q => {
+        expect(q.getStrategies()).toStrictEqual({});
       });
     });
   });

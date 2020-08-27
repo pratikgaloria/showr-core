@@ -1,29 +1,21 @@
 import { Backtest, BacktestReport, Strategy, Quote, Dataset } from '../src';
 import { SMA } from '../src/indicators';
+import { StrategyPoint } from '../src/strategy';
+import { sampleBacktest } from './mocks/mock-data';
 
 describe('Backtest', () => {
-  const dataset = new Dataset([20, 25, 22, 28, 35, 30, 25, 18, 15]);
-  const iSMA = new SMA({ name: 'sma2', period: 2 });
-  const strategy = new Strategy(
-    'new-strategy',
-    (quote: Quote) => {
-      const sma2 = quote.getIndicator('sma2');
-
-      if (!!sma2 && sma2 > 25) {
-        return 'entry';
-      }
-      if (!!sma2 && sma2 < 25) {
-        return 'exit';
-      }
-    },
-    [iSMA]
-  );
+  const dataset = new Dataset(sampleBacktest.dataset);
+  const strategy = sampleBacktest.strategy;
 
   describe('constructor', () => {
     it('Should run back-test over a given dataset for a given strategy.', async () => {
       const backtest = new Backtest(dataset, strategy);
-      backtest.dataset.quotes.forEach(async q => {
-        await expect(q.value).toHaveProperty('position');
+
+      backtest.dataset.quotes.forEach(q => {
+        const strategyForQuote = q.getStrategy(strategy.name);
+
+        expect(strategyForQuote).toBeTruthy();
+        expect(strategyForQuote).toBeInstanceOf(StrategyPoint);
       });
     });
   });
@@ -34,12 +26,28 @@ describe('Backtest', () => {
       const backtestReport = backtest.analyze({
         capital: 100,
         tradingQuantity: 1,
+        attribute: 'close'
       });
 
       expect(backtestReport.numberOfTrades).toBe(1);
       expect(backtestReport.loss).toBe(17);
-      expect(backtestReport.return).toBe(-17);
+      expect(backtestReport.returns).toBe(-17);
       expect(backtestReport.finalCapital).toBe(83);
+    });
+
+    it('Should exit the last trade and return a report if it was on hold.', () => {
+      const dataset2 = new Dataset([20, 25, 22, 28, 35, 30, 25, 28, 32]);
+      const backtest = new Backtest(dataset2, strategy);
+      const backtestReport = backtest.analyze({
+        capital: 100,
+        tradingQuantity: 1,
+        attribute: 'close'
+      });
+
+      expect(backtestReport.numberOfTrades).toBe(1);
+      expect(backtestReport.loss).toBe(3);
+      expect(backtestReport.returns).toBe(-3);
+      expect(backtestReport.finalCapital).toBe(97);
     });
   });
 });
@@ -53,7 +61,7 @@ describe('BacktestReport', () => {
       expect(backtestReport.profit).toBe(0);
       expect(backtestReport.loss).toBe(0);
       expect(backtestReport.numberOfTrades).toBe(0);
-      expect(backtestReport.return).toBe(0);
+      expect(backtestReport.returns).toBe(0);
       expect(backtestReport.finalCapital).toBe(1000);
     });
   });
@@ -77,7 +85,7 @@ describe('BacktestReport', () => {
       expect(backtestReport.finalCapital).toBe(1050);
       expect(backtestReport.profit).toBe(50);
       expect(backtestReport.numberOfTrades).toBe(1);
-      expect(backtestReport.return).toBe(5);
+      expect(backtestReport.returns).toBe(5);
     });
 
     it('Should update capital and other metrics accordingly for exit position in case of loss.', () => {
@@ -89,7 +97,7 @@ describe('BacktestReport', () => {
       expect(backtestReport.finalCapital).toBe(950);
       expect(backtestReport.loss).toBe(50);
       expect(backtestReport.numberOfTrades).toBe(1);
-      expect(backtestReport.return).toBe(-5);
+      expect(backtestReport.returns).toBe(-5);
     });
   });
 });

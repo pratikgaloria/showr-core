@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Indicator = void 0;
 const _1 = require("./");
+const symbols_1 = require("./enums/symbols");
 /**
  * Creates a indicator that can be calculated over a dataset.
  */
@@ -27,9 +28,9 @@ class Indicator {
         return this._calculate;
     }
     /**
-     * Extends each quote of the dataset with a calculated indicator value and returns a new dataset.
+     * Mutates each quote of the given dataset with a calculated indicator value.
      * @param dataset - `Dataset`.
-     * @returns A new `Dataset`.
+     * @returns Mutated `Dataset`.
      */
     spread(dataset) {
         if (this.options && this.options.beforeCalculate) {
@@ -37,9 +38,7 @@ class Indicator {
         }
         const emptyDataset = new _1.Dataset();
         dataset.quotes.forEach((quote) => {
-            const quoteWithIndicator = quote.extend({
-                [this.name]: this.calculate(emptyDataset.add(quote)),
-            });
+            const quoteWithIndicator = quote.extend(Object.assign(Object.assign({}, quote.getIndicators()), { [this.name]: this.calculate(emptyDataset.add(quote)) }), symbols_1.Keys.indicators);
             emptyDataset.update(quoteWithIndicator);
         });
         return dataset;

@@ -62,21 +62,8 @@ export class Dataset {
    * @returns self reference.
    */
   apply(...indicators: Indicator[]) {
-    const emptyDataset = new Dataset();
-
-    this._value.forEach((quote: Quote) => {
-      emptyDataset.add(quote);
-
-      quote.extend(
-        indicators.reduce(
-          (q, i) => ({
-            ...q,
-            [i.name]: i.calculate(emptyDataset),
-          }),
-          {}
-        ),
-        Keys.indicators
-      );
+    indicators.forEach(i => {
+      i.spread(this);
     });
 
     return this;

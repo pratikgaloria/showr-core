@@ -2,6 +2,7 @@ import { Dataset, Strategy } from './';
 export interface BacktestConfiguration {
     capital: number;
     tradingQuantity: number;
+    attribute: string;
     name?: string;
     symbol?: string;
 }
@@ -15,7 +16,7 @@ export declare class BacktestReport {
     numberOfTrades: number;
     initialCapital: number;
     finalCapital: number;
-    return: number;
+    returns: number;
     /**
      * Defines the initial capital for the back-test.
      * @param initialCapital - Initial capital for the back-test.
@@ -39,12 +40,14 @@ export declare class BacktestReport {
  */
 export declare class Backtest {
     protected _dataset: Dataset;
+    protected _strategy: Strategy;
     /**
      * Runs back-test over a dataset for a given strategy that can be analyzed.
      * @param dataset - `Dataset` over which strategy should be back-tested.
      * @param strategy - `Strategy` that should be back-tested.
      */
     constructor(dataset: Dataset, strategy: Strategy);
+    get strategy(): Strategy;
     get dataset(): Dataset;
     /**
      * Creates a report with profit and other metrics over a back-tested dataset.

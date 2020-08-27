@@ -1,9 +1,12 @@
 import { Dataset, Quote, Position, Strategy } from './';
 import { PositionType } from './position';
+import { Keys } from './enums/symbols';
+import { StrategyPoint } from './strategy';
 
 export interface BacktestConfiguration {
   capital: number;
   tradingQuantity: number;
+  attribute: string;
   name?: string;
   symbol?: string;
 }
@@ -12,36 +15,36 @@ export interface BacktestConfiguration {
  * Creates a back-test report.
  */
 export class BacktestReport {
-  protected _currentCapital: number;
+  _currentCapital: number;
 
   profit: number;
   loss: number;
   numberOfTrades: number;
   initialCapital: number;
   finalCapital: number;
-  return: number;
+  returns: number;
 
   /**
    * Defines the initial capital for the back-test.
    * @param initialCapital - Initial capital for the back-test.
    */
-  constructor(initialCapital) {
+  constructor(initialCapital: number) {
     this.profit = 0;
     this.loss = 0;
     this.numberOfTrades = 0;
     this.initialCapital = initialCapital;
     this.finalCapital = initialCapital;
 
+    this.returns = 0;
     this._currentCapital = initialCapital;
-    this.return = 0;
   }
 
-  private updateCapital(value) {
+  private updateCapital(value: number) {
     this.finalCapital += value;
   }
 
   private updateTotals() {
-    this.return =
+    this.returns =
       ((this.finalCapital - this.initialCapital) * 100) / this.initialCapital;
     this.numberOfTrades += 1;
   }
@@ -77,6 +80,7 @@ export class BacktestReport {
  */
 export class Backtest {
   protected _dataset: Dataset;
+  protected _strategy: Strategy;
 
   /**
    * Runs back-test over a dataset for a given strategy that can be analyzed.
@@ -84,15 +88,26 @@ export class Backtest {
    * @param strategy - `Strategy` that should be back-tested.
    */
   constructor(dataset: Dataset, strategy: Strategy) {
+    this._strategy = strategy;
     this._dataset = dataset;
     this._dataset.apply(...strategy.indicators);
 
     const _position = new Position('idle');
     this._dataset.quotes.forEach((quote: Quote) => {
-      _position.update(strategy.apply(quote));
+      _position.update(strategy.apply(quote)?.position);
 
-      quote.extend(_position.value);
+      quote.extend(
+        {
+          ...quote.getStrategies(),
+          [strategy.name]: new StrategyPoint(_position.value),
+        },
+        Keys.strategies
+      );
     });
+  }
+
+  get strategy() {
+    return this._strategy;
   }
 
   get dataset() {
@@ -105,13 +120,25 @@ export class Backtest {
    * @returns `BacktestReport`.
    */
   analyze(configuration: BacktestConfiguration) {
+    const { attribute, tradingQuantity } = configuration;
     const report = new BacktestReport(configuration.capital);
 
-    this._dataset.quotes.forEach((quote: Quote) => {
-      if ((quote.value.position as PositionType) === 'entry') {
-        report.markEntry(quote.value.close * configuration.tradingQuantity);
-      } else if ((quote.value.position as PositionType) === 'exit') {
-        report.markExit(quote.value.close * configuration.tradingQuantity);
+    this._dataset.quotes.forEach((quote: Quote, index, array) => {
+      const _positionValue = quote.getStrategy(this.strategy.name)?.position;
+      const _attributeValue = quote.getAttribute(attribute);
+      const _tradeValue = _attributeValue * tradingQuantity;
+
+      if (
+        index === array.length - 1 &&
+        (_positionValue === 'entry' || _positionValue === 'hold')
+      ) {
+        report.markExit(_tradeValue);
+      } else {
+        if (_positionValue === 'entry') {
+          report.markEntry(_tradeValue);
+        } else if (_positionValue === 'exit') {
+          report.markExit(_tradeValue);
+        }
       }
     });
 

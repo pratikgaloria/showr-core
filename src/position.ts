@@ -8,9 +8,7 @@ export class Position {
   }
 
   get value() {
-    return {
-      position: this._type,
-    };
+    return this._type;
   }
 
   update(newPosition?: PositionType) {
