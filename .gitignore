@@ -63,5 +63,6 @@ typings/
 
 .DS_Store
 
-build/
-docs/
+dist
+build
+docs

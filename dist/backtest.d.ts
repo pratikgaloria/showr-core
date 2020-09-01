@@ -10,7 +10,7 @@ export interface BacktestConfiguration {
  * Creates a back-test report.
  */
 export declare class BacktestReport {
-    protected _currentCapital: number;
+    _currentCapital: number;
     profit: number;
     loss: number;
     numberOfTrades: number;
@@ -21,7 +21,7 @@ export declare class BacktestReport {
      * Defines the initial capital for the back-test.
      * @param initialCapital - Initial capital for the back-test.
      */
-    constructor(initialCapital: any);
+    constructor(initialCapital: number);
     private updateCapital;
     private updateTotals;
     /**

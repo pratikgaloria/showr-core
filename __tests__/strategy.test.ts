@@ -1,6 +1,4 @@
-import { Strategy, Indicator, Dataset, Quote, BacktestReport } from '../src';
-import { SMA } from '../src/indicators';
-import { StrategyPoint } from '../src/strategy';
+import { Strategy, Indicator, Dataset, Quote } from '../src';
 import { sampleStrategy, sampleBacktest } from './mocks/mock-data';
 
 describe('Strategy', () => {

@@ -18,8 +18,8 @@ class BacktestReport {
         this.numberOfTrades = 0;
         this.initialCapital = initialCapital;
         this.finalCapital = initialCapital;
-        this._currentCapital = initialCapital;
         this.returns = 0;
+        this._currentCapital = initialCapital;
     }
     updateCapital(value) {
         this.finalCapital += value;

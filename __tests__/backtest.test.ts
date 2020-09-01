@@ -1,5 +1,4 @@
-import { Backtest, BacktestReport, Strategy, Quote, Dataset } from '../src';
-import { SMA } from '../src/indicators';
+import { Backtest, BacktestReport, Dataset } from '../src';
 import { StrategyPoint } from '../src/strategy';
 import { sampleBacktest } from './mocks/mock-data';
 

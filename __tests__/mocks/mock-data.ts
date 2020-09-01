@@ -1,5 +1,6 @@
-import { Dataset, Strategy, Quote, Indicator, SMA } from '../../src';
+import { Dataset, Strategy, Quote, Indicator } from '../../src';
 import { StrategyPoint } from '../../src/strategy';
+import { SMA } from './mock-sma';
 
 export const sampleIndicatorFn = (ds: Dataset) =>
   ds.value[ds.value.length - 1].close * 5;

@@ -1,6 +1,5 @@
-import { Indicator } from '../indicator';
-import { Dataset } from '../dataset';
-import { EnumSymbols, Keys } from '../enums/symbols';
+import { Dataset, Indicator } from '../../src';
+import { EnumSymbols } from '../../src/enums/symbols';
 
 interface IIndicatorOptionsSMA {
   name?: string;
