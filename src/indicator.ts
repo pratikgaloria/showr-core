@@ -1,17 +1,17 @@
 import { Dataset, Quote } from './';
-import { Keys } from './enums/symbols';
+import { Keys } from './enums/symbols.enum';
 
-export interface IndicatorOptions {
-  [key: string]: any;
+export interface IndicatorOptions<T> {
+  params?: T;
   beforeCalculate?: (dataset: Dataset) => void;
 }
 
 /**
  * Creates a indicator that can be calculated over a dataset.
  */
-export class Indicator {
+export class Indicator<T> {
   protected _name: string;
-  protected _options: IndicatorOptions | undefined;
+  protected _options?: IndicatorOptions<T>;
   protected _calculate: (dataset: Dataset) => number;
 
   /**
@@ -23,19 +23,23 @@ export class Indicator {
   constructor(
     name: string,
     calculate: (dataset: Dataset) => number,
-    options?: IndicatorOptions
+    options?: IndicatorOptions<T>
   ) {
     this._name = name;
-    this._options = options;
     this._calculate = calculate;
+    this._options = options;
   }
 
   get name() {
-    return this.options && this.options.name ? this.options.name : this._name;
+    return this._name;
   }
 
   get options() {
     return this._options;
+  }
+
+  get params() {
+    return this._options?.params;
   }
 
   get calculate() {

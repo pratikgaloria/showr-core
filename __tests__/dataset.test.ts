@@ -1,5 +1,5 @@
 import { Dataset, Quote, Indicator } from '../src';
-import { Keys } from '../src/enums/symbols';
+import { Keys } from '../src/enums/symbols.enum';
 import { sampleIndicatorFn } from './mocks/mock-data';
 
 describe('Dataset', () => {

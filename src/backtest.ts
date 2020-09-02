@@ -1,6 +1,5 @@
 import { Dataset, Quote, Position, Strategy } from './';
-import { PositionType } from './position';
-import { Keys } from './enums/symbols';
+import { Keys } from './enums/symbols.enum';
 import { StrategyPoint } from './strategy';
 
 export interface BacktestConfiguration {

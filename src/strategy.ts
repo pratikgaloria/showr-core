@@ -22,7 +22,7 @@ export class StrategyPoint {
 export class Strategy {
   protected _name: string;
   protected _define: (quote: Quote) => StrategyPoint | undefined;
-  protected _indicators: Indicator[];
+  protected _indicators: Indicator<any>[];
 
   /**
    * Creates a strategy with definition and indicators.
@@ -33,7 +33,7 @@ export class Strategy {
   constructor(
     name: string,
     define: (quote: Quote) => StrategyPoint | undefined,
-    indicators: Indicator[]
+    indicators: Indicator<any>[]
   ) {
     this._name = name;
     this._define = define;

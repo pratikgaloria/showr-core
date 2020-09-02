@@ -1,5 +1,4 @@
 import { Quote, Indicator } from './';
-import { Keys } from './enums/symbols';
 
 /**
  * Creates a dataset out of data, where data is an array of any numeric values.
@@ -61,7 +60,7 @@ export class Dataset {
    * @param indicators - Array of `Indicator`.
    * @returns self reference.
    */
-  apply(...indicators: Indicator[]) {
+  apply(...indicators: Indicator<any>[]) {
     indicators.forEach(i => {
       i.spread(this);
     });

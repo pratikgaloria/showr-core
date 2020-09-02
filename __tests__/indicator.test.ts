@@ -1,6 +1,10 @@
 import { Indicator, Dataset } from '../src';
-import { Keys } from '../src/enums/symbols';
+import { Keys } from '../src/enums/symbols.enum';
 import { sampleIndicatorFn } from './mocks/mock-data';
+
+interface SampleIndicatorParams {
+  period?: number;
+}
 
 describe('Indicator', () => {
   describe('constructor', () => {
@@ -19,20 +23,31 @@ describe('Indicator', () => {
     });
 
     it('Should create a valid Indicator object with options.', () => {
-      const indicator = new Indicator(
-        'sma',
-        function(this: Indicator, ds: Dataset) {
-          return ds.value[0].close / this.options?.period;
+      const indicator = new Indicator<SampleIndicatorParams>(
+        'sma5',
+        function(this: Indicator<SampleIndicatorParams>, ds: Dataset) {
+          const { period = 10 } = this.params as SampleIndicatorParams;
+
+          return ds.value[0].close / period;
         },
-        { name: 'sma5', period: 5 }
+        { params: { period: 5 } }
       );
 
-      expect(indicator).toHaveProperty('options');
-      expect(indicator.options).toHaveProperty('name');
-      expect(indicator.options).toHaveProperty('period');
+      expect(indicator).toHaveProperty('params');
+      expect(indicator.params).toHaveProperty('period');
 
       expect(indicator.name).toBe('sma5');
       expect(indicator.calculate(new Dataset([1]))).toBe(0.2);
+    });
+  });
+
+  describe('params', () => {
+    it('Should return undefined if params are not provided.', () => {
+      const mockFn = jest.fn();
+      const indicator = new Indicator<SampleIndicatorParams>('add1', mockFn);
+
+      expect(indicator).toHaveProperty('params');
+      expect(indicator.params).toBeUndefined();
     });
   });
 

@@ -24,7 +24,7 @@ export const sampleBacktest = {
         return new StrategyPoint('exit');
       }
     },
-    [new SMA({ name: 'sma2', period: 2 })]
+    [new SMA('sma2', { period: 2 })]
   ),
   configuration: {
     capital: 100,

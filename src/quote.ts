@@ -1,4 +1,4 @@
-import { EnumSymbols, Keys } from './enums/symbols';
+import { EnumSymbols, Keys } from './enums/symbols.enum';
 import { tryParseFloat } from './utils/numbers';
 import { StrategyPoint } from './strategy';
 
