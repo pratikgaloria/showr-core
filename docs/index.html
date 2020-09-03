@@ -1,0 +1,234 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>@showr/core</title>
+	<meta name="description" content="Documentation for @showr/core">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">@showr/core</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1>@showr/core</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#showr-core" id="showr-core" style="color: inherit; text-decoration: none;">
+					<h1>showr-core</h1>
+				</a>
+				<p><img src="https://img.shields.io/travis/pratikgaloria/showr-core.svg" alt="Travis (.org)">
+					<a href="https://coveralls.io/github/pratikgaloria/showr-core?branch=master"><img src="https://coveralls.io/repos/github/pratikgaloria/showr-core/badge.svg?branch=master" alt="Coverage Status"></a>
+					<a href="https://www.npmjs.com/package/@showr/core"><img src="https://img.shields.io/npm/v/@showr/core.svg" alt="npm (scoped)"></a>
+					<img src="https://img.shields.io/github/issues/pratikgaloria/showr-core.svg" alt="GitHub issues">
+				<img src="https://img.shields.io/bundlephobia/min/@showr/core.svg" alt="npm bundle size"></p>
+				<p>showr-core is a library built with Typescript that allows you to define efficient trading strategy to gain profits during a live market. You can use and combine hundreds of technical indicators to define your strategy or you can create your own technical indicator.</p>
+				<p>Its powerful API also allows you to backtest your strategy over a historical data before putting it in action.</p>
+				<a href="#features" id="features" style="color: inherit; text-decoration: none;">
+					<h1>Features</h1>
+				</a>
+				<p>This open-source library lets you create your own trading strategy and apply the same during the live market. Some of the features are:</p>
+				<ul>
+					<li><input checked="" disabled="" type="checkbox"> Use hundreds of in-built technical indicators or create your own.</li>
+					<li><input checked="" disabled="" type="checkbox"> Define trading strategies using combination of indicators, rules and configuration. </li>
+					<li><input checked="" disabled="" type="checkbox"> Backtest your trading strategy over any historical dataset.</li>
+					<li><input disabled="" type="checkbox"> Test your strategy over a live market.</li>
+				</ul>
+				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+					<h1>Installation</h1>
+				</a>
+				<pre><code class="language-bash">npm i --save @showr/core</code></pre>
+				<p>or</p>
+				<pre><code class="language-bash">yarn add @showr/core</code></pre>
+				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
+					<h1>Usage</h1>
+				</a>
+				<p>You can import available classes and helpers from the main library.</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> { Dataset, Indicator } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@showr/core&#x27;</span>;
+<span class="hljs-comment">// or</span>
+<span class="hljs-keyword">const</span> { Dataset, Indicator } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;@showr/core&#x27;</span>);</code></pre>
+				<p>See complete API <a href="https://pratikgaloria.github.io/showr-core">documentation</a> for all the available classes and methods.</p>
+				<a href="#api" id="api" style="color: inherit; text-decoration: none;">
+					<h1>API</h1>
+				</a>
+				<a href="#dataset" id="dataset" style="color: inherit; text-decoration: none;">
+					<h2>Dataset</h2>
+				</a>
+				<p>Dataset can be created out of any data which should in a form of an array. Dataset allows you to apply indicators over each data point and you can backtest your trading strategy over any Dataset.</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> { Dataset } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@showr/core&#x27;</span>;
+
+<span class="hljs-keyword">const</span> ds = <span class="hljs-keyword">new</span> Dataset([<span class="hljs-number">10</span>, <span class="hljs-number">12.5</span>, <span class="hljs-number">11</span>], <span class="hljs-string">&#x27;close&#x27;</span>);
+
+<span class="hljs-built_in">console</span>.log(ds.value); <span class="hljs-comment">// [{ close: 10 }, { close: 12.5 }, { close: 11 }]</span></code></pre>
+				<p>You can provide any array containing objects or numbers and that will be converted into a Dataset object, which later can be used to perform various operations like backtesting.</p>
+				<a href="#indicator" id="indicator" style="color: inherit; text-decoration: none;">
+					<h2>Indicator</h2>
+				</a>
+				<p>The outstanding advantage of this library is that you can create your own technical indicator and then use it for defining trading strategies.</p>
+				<p>All you need is to define a <code>calculate</code> function for the indicator you are creating and then you can apply it over your Dataset.</p>
+				<p>For example, you can create indicator that multiplies the quote value with golden ratio.</p>
+				<pre><code class="language-Typescript"><span class="hljs-keyword">import</span> { Dataset, Indicator } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@showr/core&#x27;</span>;
+<span class="hljs-keyword">import</span> _ <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;lodash&#x27;</span>; <span class="hljs-comment">// Optional</span>
+
+<span class="hljs-keyword">const</span> goldenR = <span class="hljs-keyword">new</span> Indicator(<span class="hljs-string">&#x27;goldenR&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">ds: Dataset</span>) =&gt;</span> {
+    <span class="hljs-keyword">const</span> lastQuote = _.last(ds.quotes);
+    <span class="hljs-keyword">return</span> lastQuote.getAttribute(<span class="hljs-string">&#x27;close&#x27;</span>) * <span class="hljs-number">1.61</span>;
+});</code></pre>
+				<p>Now create a dataset and apply the above indicator to it.</p>
+				<pre><code class="language-JavaScript"><span class="hljs-comment">// ...</span>
+<span class="hljs-keyword">const</span> ds = <span class="hljs-keyword">new</span> Dataset([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">30</span>], <span class="hljs-string">&#x27;close&#x27;</span>);
+ds.apply(goldenR);
+
+<span class="hljs-built_in">console</span>.log(ds.quotes); <span class="hljs-comment">// [{ close: 10, indicators: { goldenR: 16.1 }}, ... ]</span>
+<span class="hljs-built_in">console</span>.log(_.last(ds.quotes).getIndicator(<span class="hljs-string">&#x27;goldenR&#x27;</span>)); <span class="hljs-comment">// 16.1</span></code></pre>
+				<p>Learn more about creating indicators with Parameter in API documentation.</p>
+				<p>In-built indicators are provided in a stand-alone library <a href="https://www.npmjs.com/package/@showr/indicators">@showr/indicators</a> and you can directly import them inside your project.</p>
+				<p>For example,</p>
+				<pre><code class="language-JavaScript"><span class="hljs-keyword">import</span> { Dataset } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@showr/core&#x27;</span>;
+<span class="hljs-keyword">import</span> { SMA } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@showr/indicators&#x27;</span>;
+
+<span class="hljs-keyword">const</span> ds = <span class="hljs-keyword">new</span> Dataset([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">30</span>]);
+
+<span class="hljs-keyword">const</span> sma2 = <span class="hljs-keyword">new</span> SMA(<span class="hljs-string">&#x27;sma2&#x27;</span>, { <span class="hljs-attr">period</span>: <span class="hljs-number">2</span> });
+ds.apply(sma2);
+
+<span class="hljs-built_in">console</span>.log(_.last(ds.quotes).getIndicator(<span class="hljs-string">&#x27;sma2&#x27;</span>)); <span class="hljs-comment">// 25</span></code></pre>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-enum">
+						<a href="enums/enumsymbols.html" class="tsd-kind-icon">Enum<wbr>Symbols</a>
+					</li>
+					<li class=" tsd-kind-enum">
+						<a href="enums/keys.html" class="tsd-kind-icon">Keys</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/backtest.html" class="tsd-kind-icon">Backtest</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/backtestreport.html" class="tsd-kind-icon">Backtest<wbr>Report</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/dataset.html" class="tsd-kind-icon">Dataset</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/indicator.html" class="tsd-kind-icon">Indicator</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/position.html" class="tsd-kind-icon">Position</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/quote.html" class="tsd-kind-icon">Quote</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/strategy.html" class="tsd-kind-icon">Strategy</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/strategypoint.html" class="tsd-kind-icon">Strategy<wbr>Point</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/backtestconfiguration.html" class="tsd-kind-icon">Backtest<wbr>Configuration</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/indicatoroptions.html" class="tsd-kind-icon">Indicator<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#positiontype" class="tsd-kind-icon">Position<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#tquote" class="tsd-kind-icon">TQuote</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#getalluniquesubsets" class="tsd-kind-icon">get<wbr>All<wbr>Unique<wbr>Subsets</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#tryparsefloat" class="tsd-kind-icon">try<wbr>Parse<wbr>Float</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
