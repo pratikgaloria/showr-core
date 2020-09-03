@@ -6,53 +6,89 @@
 ![GitHub issues](https://img.shields.io/github/issues/pratikgaloria/showr-core.svg)
 ![npm bundle size](https://img.shields.io/bundlephobia/min/@showr/core.svg)
 
-Showr: Open source JavaScript library to generate technical indicators over stock market data sets.
+showr-core is a library built with Typescript that allows you to define efficient trading strategy to gain profits during a live market. You can use and combine hundreds of technical indicators to define your strategy or you can create your own technical indicator.
 
-## Usage
+Its powerful API also allows you to backtest your strategy over a historical data before putting it in action.
 
-### Indicators
+# Features
 
-Each Indicator has an `calculate` function to calculate the value, it accepts below parameters:
+This open-source library lets you create your own trading strategy and apply the same during the live market. Some of the features are:
+- [x] Use hundreds of in-built technical indicators or create your own.
+- [x] Define trading strategies using combination of indicators, rules and configuration. 
+- [x] Backtest your trading strategy over any historical dataset.
+- [ ] Test your strategy over a live market.
 
-1. `quote`: OHLC quote for which you need to generate an Indicator
-2. `dataset`: Historical dataset consist of one or more OHLC quotes.
-
-Example:
-
-#### Importing indicator
-
-```JavaScript
-import { SMA } from '@showr/core/indicators';
+# Installation
+```bash
+npm i --save @showr/core
+```
+or
+```bash
+yarn add @showr/core
 ```
 
-#### Using indicator
+# Usage
+You can import available classes and helpers from the main library.
+```javascript
+import { Dataset, Indicator } from '@showr/core';
+// or
+const { Dataset, Indicator } = require('@showr/core');
+```
+See complete API [documentation](https://pratikgaloria.github.io/showr-core) for all the available classes and methods.
 
-```JavaScript
-// Historical dataset
-const dataset = new Dataset([{
-  timestamp: '07/20/2019T09:30:00Z',
-  open: 142,
-  high: 145,
-  low: 135,
-  close: 140,
-}, {
-  timestamp: '07/21/2019T09:30:00Z',
-  open: 140,
-  high: 150,
-  low: 130,
-  close: 145,
-}]);
+# API
 
-// Latest point
-const quote = new Quote({
-  timestamp: '07/22/2019T09:30:00Z',
-  open: 145,
-  high: 160,
-  low: 140,
-  close: 150,
+## Dataset
+Dataset can be created out of any data which should in a form of an array. Dataset allows you to apply indicators over each data point and you can backtest your trading strategy over any Dataset.
+
+```javascript
+import { Dataset } from '@showr/core';
+
+const ds = new Dataset([10, 12.5, 11], 'close');
+
+console.log(ds.value); // [{ close: 10 }, { close: 12.5 }, { close: 11 }]
+```
+You can provide any array containing objects or numbers and that will be converted into a Dataset object, which later can be used to perform various operations like backtesting.
+
+## Indicator
+
+The outstanding advantage of this library is that you can create your own technical indicator and then use it for defining trading strategies.
+
+All you need is to define a `calculate` function for the indicator you are creating and then you can apply it over your Dataset.
+
+For example, you can create indicator that multiplies the quote value with golden ratio.
+```Typescript
+import { Dataset, Indicator } from '@showr/core';
+import _ from 'lodash'; // Optional
+
+const goldenR = new Indicator('goldenR', (ds: Dataset) => {
+    const lastQuote = _.last(ds.quotes);
+    return lastQuote.getAttribute('close') * 1.61;
 });
+```
+Now create a dataset and apply the above indicator to it.
+```JavaScript
+// ...
+const ds = new Dataset([10, 20, 30], 'close');
+ds.apply(goldenR);
 
-// Calculate SMA (Simple Moving Average) for a given Point over last 3 periods.
-console.log(SMA.calculate(quote, dataset)); // 145
+console.log(ds.quotes); // [{ close: 10, indicators: { goldenR: 16.1 }}, ... ]
+console.log(_.last(ds.quotes).getIndicator('goldenR')); // 16.1
+```
 
+Learn more about creating indicators with Parameter in API documentation.
+
+In-built indicators are provided in a stand-alone library [@showr/indicators](https://www.npmjs.com/package/@showr/indicators) and you can directly import them inside your project.
+
+For example,
+```JavaScript
+import { Dataset } from '@showr/core';
+import { SMA } from '@showr/indicators';
+
+const ds = new Dataset([10, 20, 30]);
+
+const sma2 = new SMA('sma2', { period: 2 });
+ds.apply(sma2);
+
+console.log(_.last(ds.quotes).getIndicator('sma2')); // 25
 ```
