@@ -67,4 +67,13 @@ export class Dataset {
 
     return this;
   }
+
+  /**
+   * Flatten quote over an attribute
+   * @param attribute - The attribute.
+   * @returns flatten array.
+   */
+  flatten(attribute: string) {
+    return this.quotes.map(q => q.getAttribute(attribute));
+  }
 }

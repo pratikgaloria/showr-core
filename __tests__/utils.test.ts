@@ -1,5 +1,6 @@
 import { tryParseFloat } from '../src/utils/numbers';
 import { getAllUniqueSubsets } from '../src/utils/helpers';
+import { getAverageGain, getAverageLoss } from '../src/utils';
 
 describe('Utils', () => {
   describe('Numbers', () => {
@@ -42,6 +43,56 @@ describe('Utils', () => {
         expect(getAllUniqueSubsets(array).length).toBe(
           Math.pow(2, array.length) - 1
         );
+      });
+    });
+  });
+
+  describe('Utils', () => {
+    describe('getAverageGain', () => {
+      it('Should return average gain of the given array', () => {
+        // Reference: https://school.stockcharts.com/doku.php?id=technical_indicators:relative_strength_index_rsi
+        const dataset = [
+          44.34,
+          44.09,
+          44.15,
+          43.61,
+          44.33,
+          44.83,
+          45.1,
+          45.42,
+          45.84,
+          46.08,
+          45.89,
+          46.03,
+          45.61,
+          46.28,
+          46.28
+        ];
+
+        expect(getAverageGain(dataset, 14)?.toFixed(2)).toEqual('0.24');
+      });
+
+      it('Should return average loss of the given array', () => {
+        // Reference: https://school.stockcharts.com/doku.php?id=technical_indicators:relative_strength_index_rsi
+        const dataset = [
+          44.34, 
+          44.09,
+          44.15,
+          43.61,
+          44.33,
+          44.83,
+          45.1,
+          45.42,
+          45.84,
+          46.08,
+          45.89,
+          46.03,
+          45.61,
+          46.28,
+          46.28
+        ];
+
+        expect(getAverageLoss(dataset, 14)?.toFixed(2)).toEqual('0.10');
       });
     });
   });
