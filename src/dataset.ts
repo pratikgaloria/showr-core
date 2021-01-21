@@ -34,6 +34,19 @@ export class Dataset {
   }
 
   /**
+   * Get quote at the given zero based position
+   * @param position - number, where 0 is first index, and -1 is the last index.
+   * @returns - `Quote` if found.
+   */
+  at(position: number) {
+    if (position < 0) {
+      return this.quotes[this._value.length + position];
+    } else {
+      return this.quotes[position];
+    }
+  }
+
+  /**
    * Adds a given quote to the end of the dataset.
    * @param quote - `Quote`.
    * @returns self reference.

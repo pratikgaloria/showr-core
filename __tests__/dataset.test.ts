@@ -47,6 +47,30 @@ describe('Dataset', () => {
     });
   });
 
+  describe('at', () => {
+    const dataset = new Dataset([1, 2, 3]);
+
+    it('Should return first quote if called with 0.', () => {
+      expect(dataset.at(0).value).toStrictEqual({ close: 1 });
+    });
+
+    it('Should return second quote if called with 1.', () => {
+      expect(dataset.at(1).value).toStrictEqual({ close: 2 });
+    });
+
+    it('Should return last quote if called with -1.', () => {
+      expect(dataset.at(-1).value).toStrictEqual({ close: 3 });
+    });
+
+    it('Should return second last quote if called with -2.', () => {
+      expect(dataset.at(-2).value).toStrictEqual({ close: 2 });
+    });
+
+    it('Should return undefined for invalid index.', () => {
+      expect(dataset.at(3)).toBeUndefined();
+    });
+  });
+
   describe('add', () => {
     it('Should append a new Quote to the dataset', () => {
       const dataset = new Dataset([1]);
