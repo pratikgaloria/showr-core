@@ -86,10 +86,7 @@ describe('Dataset', () => {
   describe('apply', () => {
     it('Should apply indicator to the dataset.', () => {
       const dataset = new Dataset([1]);
-      const indicator = new Indicator(
-        'multi5',
-        sampleIndicatorFn
-      );
+      const indicator = new Indicator('multi5', sampleIndicatorFn);
 
       dataset.apply(indicator);
 
@@ -117,6 +114,17 @@ describe('Dataset', () => {
         { close: 5, [Keys.indicators]: { add2: 7, min1: 4 } },
         { close: 10, [Keys.indicators]: { add2: 12, min1: 9 } },
       ]);
+    });
+  });
+
+  describe('flatten', () => {
+    it('Should flatten the dataset over any attribute.', () => {
+      const dataset = new Dataset([
+        { close: 10, high: 15 },
+        { close: 20, high: 25 },
+      ]);
+
+      expect(dataset.flatten('high')).toStrictEqual([15, 25]);
     });
   });
 });
