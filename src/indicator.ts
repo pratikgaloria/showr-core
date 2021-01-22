@@ -42,8 +42,12 @@ export class Indicator<T> {
     return this._options?.params;
   }
 
-  get calculate() {
-    return this._calculate;
+  calculate(dataset: Dataset) {
+    if (this.options?.beforeCalculate) {
+      this.options.beforeCalculate(dataset);
+    }
+
+    return this._calculate(dataset);
   }
 
   /**
