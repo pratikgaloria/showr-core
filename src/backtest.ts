@@ -7,7 +7,6 @@ export interface BacktestConfiguration {
   tradingQuantity: number;
   attribute: string;
   name?: string;
-  symbol?: string;
 }
 
 /**
