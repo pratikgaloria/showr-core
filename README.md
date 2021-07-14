@@ -43,7 +43,7 @@ Dataset can be created out of any data which should in a form of an array. Datas
 ```javascript
 import { Dataset } from '@showr/core';
 
-const ds = new Dataset([10, 12.5, 11], 'close');
+const ds = new Dataset([10, 12.5, 11]);
 
 console.log(ds.value); // [{ close: 10 }, { close: 12.5 }, { close: 11 }]
 ```
@@ -59,21 +59,22 @@ For example, you can create an indicator, let's say `goldenR`, that multiplies t
 
 ```Typescript
 import { Dataset, Indicator } from '@showr/core';
-import _ from 'lodash'; // This is optional
 
 const goldenR = new Indicator('goldenR', (ds: Dataset) => {
-    const lastQuote = _.last(ds.quotes);
-    return lastQuote.getAttribute('close') * 1.61;
+    const lastQuote = ds.at(-1);
+    return lastQuote.value * 1.61;
 });
 ```
 Now create a dataset and apply the above indicator to it.
 ```JavaScript
 // ...
-const ds = new Dataset([10, 20, 30], 'close');
+const ds = new Dataset([10, 20, 30]);
 ds.apply(goldenR);
 
 console.log(ds.quotes); // [{ close: 10, indicators: { goldenR: 16.1 }}, ... ]
-console.log(_.last(ds.quotes).getIndicator('goldenR')); // 16.1
+
+// Get indicator value for the first quote
+console.log(ds.at(0).getIndicator('goldenR')); // 16.1
 ```
 
 Learn more about creating [Indicators](https://pratikgaloria.github.io/showr-core/classes/indicator.html) with parameters in API documentation.
@@ -84,12 +85,12 @@ For example,
 ```JavaScript
 import { Dataset } from '@showr/core';
 import { SMA } from '@showr/indicators';
-import _ from 'lodash'; // This is optional
 
 const ds = new Dataset([10, 20, 30]);
 
 const sma2 = new SMA('sma2', { period: 2 });
 ds.apply(sma2);
 
-console.log(_.last(ds.quotes).getIndicator('sma2')); // 25
+// Get sma2 value for the last quote
+console.log(ds.at(-1).getIndicator('sma2')); // 25
 ```
