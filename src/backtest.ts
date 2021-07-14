@@ -1,106 +1,36 @@
 import { Dataset, Quote, Position, Strategy } from './';
-import { Keys } from './enums/symbols.enum';
-import { StrategyPoint } from './strategy';
+import { BacktestReport } from './backtestReport';
+import { StrategyValue } from './strategy';
 
 export interface BacktestConfiguration {
   capital: number;
   tradingQuantity: number;
-  attribute: string;
+  attribute?: string;
   name?: string;
-}
-
-/**
- * Creates a back-test report.
- */
-export class BacktestReport {
-  _currentCapital: number;
-
-  profit: number;
-  loss: number;
-  numberOfTrades: number;
-  initialCapital: number;
-  finalCapital: number;
-  returns: number;
-
-  /**
-   * Defines the initial capital for the back-test.
-   * @param initialCapital - Initial capital for the back-test.
-   */
-  constructor(initialCapital: number) {
-    this.profit = 0;
-    this.loss = 0;
-    this.numberOfTrades = 0;
-    this.initialCapital = initialCapital;
-    this.finalCapital = initialCapital;
-
-    this.returns = 0;
-    this._currentCapital = initialCapital;
-  }
-
-  private updateCapital(value: number) {
-    this.finalCapital += value;
-  }
-
-  private updateTotals() {
-    this.returns =
-      ((this.finalCapital - this.initialCapital) * 100) / this.initialCapital;
-    this.numberOfTrades += 1;
-  }
-
-  /**
-   * Updates the capital according to the traded value after executing the entry position.
-   * @param tradedValue - Traded value at the time.
-   */
-  markEntry(tradedValue: number) {
-    this.updateCapital(-tradedValue);
-  }
-
-  /**
-   * Updates the capital according to the traded value after executing the exit position.
-   * @param tradedValue - Traded value at the time.
-   */
-  markExit(tradedValue: number) {
-    this.updateCapital(tradedValue);
-
-    if (this._currentCapital > this.finalCapital) {
-      this.loss += this._currentCapital - this.finalCapital;
-    } else {
-      this.profit += this.finalCapital - this._currentCapital;
-    }
-
-    this._currentCapital = this.finalCapital;
-    this.updateTotals();
-  }
 }
 
 /**
  * Back-tests the strategy over a given dataset.
  */
-export class Backtest {
-  protected _dataset: Dataset;
-  protected _strategy: Strategy;
+export class Backtest<P = any, T = number> {
+  protected _dataset: Dataset<T>;
+  protected _strategy: Strategy<P, T>;
 
   /**
    * Runs back-test over a dataset for a given strategy that can be analyzed.
    * @param dataset - `Dataset` over which strategy should be back-tested.
    * @param strategy - `Strategy` that should be back-tested.
    */
-  constructor(dataset: Dataset, strategy: Strategy) {
+  constructor(dataset: Dataset<T>, strategy: Strategy<P, T>) {
     this._strategy = strategy;
     this._dataset = dataset;
     this._dataset.apply(...strategy.indicators);
 
     const _position = new Position('idle');
-    this._dataset.quotes.forEach((quote: Quote) => {
+    this._dataset.quotes.forEach((quote: Quote<T>) => {
       _position.update(strategy.apply(quote)?.position);
 
-      quote.extend(
-        {
-          ...quote.getStrategies(),
-          [strategy.name]: new StrategyPoint(_position.value),
-        },
-        Keys.strategies
-      );
+      quote.setStrategy(strategy.name, new StrategyValue(_position.value));
     });
   }
 
@@ -121,9 +51,11 @@ export class Backtest {
     const { attribute, tradingQuantity } = configuration;
     const report = new BacktestReport(configuration.capital);
 
-    this._dataset.quotes.forEach((quote: Quote, index, array) => {
-      const _positionValue = quote.getStrategy(this.strategy.name)?.position;
-      const _attributeValue = quote.getAttribute(attribute);
+    this._dataset.quotes.forEach((quote: Quote<T>, index, array) => {
+      const _positionValue = quote.getStrategy(this.strategy.name).position;
+      const _attributeValue = attribute
+        ? quote.getAttribute(attribute)
+        : quote.value;
       const _tradeValue = _attributeValue * tradingQuantity;
 
       if (

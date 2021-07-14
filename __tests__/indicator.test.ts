@@ -1,5 +1,4 @@
 import { Indicator, Dataset } from '../src';
-import { Keys } from '../src/enums/symbols.enum';
 import { sampleIndicatorFn } from './mocks/mock-data';
 
 interface SampleIndicatorParams {
@@ -14,8 +13,8 @@ describe('Indicator', () => {
 
       expect(indicator).toHaveProperty('name');
       expect(indicator.name).toBe('add1');
-
       expect(indicator).toHaveProperty('calculate');
+
       const ds = new Dataset([1]);
       indicator.calculate(new Dataset([1]));
       expect(mockFn).toHaveBeenCalled();
@@ -28,7 +27,7 @@ describe('Indicator', () => {
         function(this: Indicator<SampleIndicatorParams>, ds: Dataset) {
           const { period = 10 } = this.params as SampleIndicatorParams;
 
-          return ds.value[0].close / period;
+          return ds.value[0] / period;
         },
         { params: { period: 5 } }
       );
@@ -62,20 +61,8 @@ describe('Indicator', () => {
       multi5.spread(dataset);
 
       expect(dataset).toBeInstanceOf(Dataset);
-      expect(dataset.value).toStrictEqual([
-        {
-          close: 1,
-          [Keys.indicators]: {
-            'multi5': 5,
-          }
-        },
-        {
-          close: 2,
-          [Keys.indicators]: {
-            'multi5': 10,
-          }
-        },
-      ]);
+      expect(dataset.quotes[0].getIndicator('multi5')).toBe(5);
+      expect(dataset.quotes[1].getIndicator('multi5')).toBe(10);
     });
 
     it('Should call beforeCalculate() if defined with options while spreading.', () => {

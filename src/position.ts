@@ -1,5 +1,36 @@
 export type PositionType = 'idle' | 'entry' | 'exit' | 'hold';
 
+export const newPositionMap: {
+  [currentPosition in PositionType]: {
+    [newPosition in PositionType]: PositionType;
+  };
+} = {
+  idle: {
+    idle: 'idle',
+    entry: 'entry',
+    exit: 'idle',
+    hold: 'idle',
+  },
+  entry: {
+    idle: 'hold',
+    entry: 'hold',
+    exit: 'exit',
+    hold: 'hold',
+  },
+  exit: {
+    idle: 'idle',
+    entry: 'entry',
+    exit: 'idle',
+    hold: 'idle',
+  },
+  hold: {
+    idle: 'hold',
+    entry: 'hold',
+    exit: 'exit',
+    hold: 'hold',
+  },
+};
+
 export class Position {
   protected _type: PositionType;
 
@@ -12,24 +43,8 @@ export class Position {
   }
 
   update(newPosition?: PositionType) {
-    if (this._type === 'idle') {
-      if (newPosition === 'entry') {
-        this._type = 'entry';
-      } else {
-        this._type = 'idle';
-      }
-    } else if (this._type === 'entry' || this._type === 'hold') {
-      if (newPosition === 'exit') {
-        this._type = 'exit';
-      } else {
-        this._type = 'hold';
-      }
-    } else if (this._type === 'exit') {
-      if (newPosition === 'entry') {
-        this._type = 'entry';
-      } else {
-        this._type = 'idle';
-      }
-    }
+    this._type = newPositionMap[this._type][newPosition ?? this._type];
+
+    return this;
   }
 }

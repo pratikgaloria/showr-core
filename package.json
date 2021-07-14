@@ -68,6 +68,9 @@
     "collectCoverageFrom": [
       "<rootDir>/src/**/*.ts"
     ],
+    "coveragePathIgnorePatterns": [
+      "index.ts"
+    ],
     "modulePaths": [
       "<rootDir>/src"
     ]

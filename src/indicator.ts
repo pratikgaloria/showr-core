@@ -1,18 +1,17 @@
-import { Dataset, Quote } from './';
-import { Keys } from './enums/symbols.enum';
+import { Dataset } from './';
 
-export interface IndicatorOptions<T> {
-  params?: T;
-  beforeCalculate?: (dataset: Dataset) => void;
+export interface IndicatorOptions<P, T = number> {
+  params?: P;
+  beforeCalculate?: (dataset: Dataset<T>) => void;
 }
 
 /**
  * Creates a indicator that can be calculated over a dataset.
  */
-export class Indicator<T> {
-  protected _name: string;
-  protected _options?: IndicatorOptions<T>;
-  protected _calculate: (dataset: Dataset) => number;
+export class Indicator<P, T = number> {
+  private _name: string;
+  private _calculate: (dataset: Dataset<T>) => number;
+  private _options?: IndicatorOptions<P, T>;
 
   /**
    * Creates an indicator with definition and configuration.
@@ -22,8 +21,8 @@ export class Indicator<T> {
    */
   constructor(
     name: string,
-    calculate: (dataset: Dataset) => number,
-    options?: IndicatorOptions<T>
+    calculate: (dataset: Dataset<T>) => number,
+    options?: IndicatorOptions<P, T>
   ) {
     this._name = name;
     this._calculate = calculate;
@@ -42,7 +41,7 @@ export class Indicator<T> {
     return this._options?.params;
   }
 
-  calculate(dataset: Dataset) {
+  calculate(dataset: Dataset<T>) {
     if (this.options?.beforeCalculate) {
       this.options.beforeCalculate(dataset);
     }
@@ -55,19 +54,16 @@ export class Indicator<T> {
    * @param dataset - `Dataset`.
    * @returns Mutated `Dataset`.
    */
-  spread(dataset: Dataset) {
+  spread(dataset: Dataset<T>) {
     if (this.options && this.options.beforeCalculate) {
       this.options.beforeCalculate(dataset);
     }
 
-    const emptyDataset = new Dataset();
-    dataset.quotes.forEach((quote: Quote) => {
-      const quoteWithIndicator = quote.extend(
-        {
-          ...quote.getIndicators(),
-          [this.name]: this.calculate(emptyDataset.add(quote)),
-        },
-        Keys.indicators
+    const emptyDataset = new Dataset<T>();
+    dataset.quotes.forEach(quote => {
+      const quoteWithIndicator = quote.setIndicator(
+        this.name,
+        this.calculate(emptyDataset.add(quote))
       );
 
       emptyDataset.update(quoteWithIndicator);

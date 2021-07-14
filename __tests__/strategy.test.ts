@@ -19,14 +19,12 @@ describe('Strategy', () => {
       const strategyFn = jest.fn();
       const indicator = new Indicator(
         'indicator',
-        (ds: Dataset) => ds.value[0].close + 1
+        (ds: Dataset) => ds.value[0] + 1
       );
       const strategy = new Strategy('strategy', strategyFn, [indicator]);
 
       const quote = new Quote(1);
-      quote.extend({
-        indicator: 2,
-      });
+      quote.setIndicator('indicator', 2);
 
       strategy.apply(quote);
 

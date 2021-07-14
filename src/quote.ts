@@ -1,54 +1,55 @@
-import { EnumSymbols, Keys } from './enums/symbols.enum';
-import { tryParseFloat } from './utils/numbers';
-import { StrategyPoint } from './strategy';
-
-export type TQuote = {
-  [key: string]: any;
-};
+import { StrategyValue } from './strategy';
 
 /**
  * Creates a quote out of any value.
+ *
+ * create a quote with new Quote<T>.
+ * quote should have value:T
+ * quote might have indicators, attributes.
+ *
+ * new Quote(1) = { value: 1 },
+ * new Quote({ close: 1 }) = { value: { close: 1 }},
  */
-export class Quote {
-  protected _value: TQuote;
+export class Quote<T = number> {
+  private _value: T;
+  private _indicators: { [key: string]: number };
+  private _strategies: { [key: string]: StrategyValue };
 
   /**
    * Creates a quote after type-casting the given value.
    * @param value - Any value.
    * @param symbol - `key` of the value when converted to the object.
    */
-  constructor(value: any, symbol?: string) {
-    this._value = Quote.transform(value, symbol);
+  constructor(value: T) {
+    this._value = this.sanitize(value);
+    this._indicators = {};
+    this._strategies = {};
   }
 
   get value() {
     return this._value;
   }
 
-  static transform(
-    valueToTransform: any,
-    symbol: string = EnumSymbols.close
-  ): TQuote {
+  get indicators() {
+    return this._indicators;
+  }
+
+  get strategies() {
+    return this._strategies;
+  }
+
+  private sanitize<V = number>(valueToTransform: V): V {
     if (
       typeof valueToTransform === 'number' ||
-      typeof valueToTransform === 'string'
+      typeof valueToTransform === 'bigint' ||
+      typeof valueToTransform === 'string' ||
+      (valueToTransform &&
+        typeof valueToTransform === 'object' &&
+        !(valueToTransform instanceof Array))
     ) {
-      return {
-        [symbol]: tryParseFloat(valueToTransform),
-      };
-    } else if (
-      valueToTransform &&
-      typeof valueToTransform === 'object' &&
-      !(valueToTransform instanceof Array)
-    ) {
-      return Object.keys(valueToTransform).reduce((q: any, k: string) => {
-        return {
-          ...q,
-          [k]: tryParseFloat(valueToTransform[k]),
-        };
-      }, {});
+      return valueToTransform;
     } else {
-      throw new Error(`Invalid quote value: ${valueToTransform}`);
+      throw new Error(`Invalid quote value: ${valueToTransform}.`);
     }
   }
 
@@ -58,19 +59,7 @@ export class Quote {
    * @returns The value of given attribute if exists, `undefined` otherwise.
    */
   getAttribute(attribute: string) {
-    return Object.prototype.hasOwnProperty.call(this._value, attribute)
-      ? this._value[attribute]
-      : undefined;
-  }
-
-  /**
-   * Get all indicator values.
-   * @returns `indicators` object of the `Quote` if exists, blank object otherwise.
-   */
-  getIndicators() {
-    return Object.prototype.hasOwnProperty.call(this._value, Keys.indicators)
-      ? this._value[Keys.indicators]
-      : {};
+    return this._value[attribute];
   }
 
   /**
@@ -79,13 +68,19 @@ export class Quote {
    * @returns Value of indicator if exists, `undefined` otherwise.
    */
   getIndicator(indicatorName: string) {
-    if (
-      Object.prototype.hasOwnProperty.call(this._value, Keys.indicators) &&
-      !!this._value[Keys.indicators][indicatorName]
-    ) {
-      return this._value[Keys.indicators][indicatorName];
-    }
-    return undefined;
+    return this._indicators[indicatorName];
+  }
+
+  /**
+   * Set indicator for a quote.
+   * @param indicatorName - Name of the `Indicator`.
+   * @param indicatorValue - Calculated value of the `Indicator`.
+   * @returns self reference.
+   */
+  setIndicator(indicatorName: string, indicatorValue: number) {
+    Object.assign(this._indicators, { [indicatorName]: indicatorValue });
+
+    return this;
   }
 
   /**
@@ -94,34 +89,17 @@ export class Quote {
    * @returns `StrategyPoint` object if strategy exists, `undefined` otherwise.
    */
   getStrategy(strategyName: string) {
-    if (
-      Object.prototype.hasOwnProperty.call(this._value, Keys.strategies) &&
-      !!this._value[Keys.strategies][strategyName]
-    ) {
-      return this._value[Keys.strategies][strategyName] as StrategyPoint;
-    }
-    return undefined;
+    return this._strategies[strategyName];
   }
 
   /**
-   * Get all strategy values.
-   * @returns `strategies` object of the `Quote` if exists, blank object otherwise.
-   */
-  getStrategies() {
-    return Object.prototype.hasOwnProperty.call(this._value, Keys.strategies)
-      ? this._value[Keys.strategies]
-      : {};
-  }
-
-  /**
-   * Extends quote with the given attribute.
-   * @param attribute - Any object.
+   * Set strategy for a quote.
+   * @param strategyName - Name of the `Strategy`.
+   * @param strategyValue - Strategy value.
    * @returns self reference.
    */
-  extend(attribute: object, key?: string) {
-    if (!(attribute instanceof Array)) {
-      Object.assign(this._value, key ? { [key]: attribute } : attribute);
-    }
+  setStrategy(strategyName: string, strategyValue: StrategyValue) {
+    Object.assign(this._strategies, { [strategyName]: strategyValue });
 
     return this;
   }

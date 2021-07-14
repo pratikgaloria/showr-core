@@ -3,22 +3,22 @@ import { Quote, Indicator } from './';
 /**
  * Creates a dataset out of data, where data is an array of any numeric values.
  */
-export class Dataset {
-  protected _value: Quote[];
+export class Dataset<T = number> {
+  protected _value: Quote<T>[];
 
   /**
    * Creates a dataset after type-casting given data values to quotes.
    * @param data - Array of `any` type of values or `Quote`.
    * @param [symbol] - If provided, each array item will be converted into a { key: value } pair where `key` would be a given symbol.
    */
-  constructor(data?: any[], key?: string) {
+  constructor(data?: T[]) {
     if (data) {
       this._value = data.map(d => {
         if (d instanceof Quote) {
           return d;
         }
 
-        return new Quote(d, key);
+        return new Quote(d);
       });
     } else {
       this._value = [];
@@ -36,7 +36,7 @@ export class Dataset {
   /**
    * Get quote at the given zero based position
    * @param position - number, where 0 is first index, and -1 is the last index.
-   * @returns - `Quote` if found.
+   * @returns - `Quote` if found or undefined.
    */
   at(position: number) {
     if (position < 0) {
@@ -51,7 +51,7 @@ export class Dataset {
    * @param quote - `Quote`.
    * @returns self reference.
    */
-  add(quote: Quote) {
+  add(quote: Quote<T>) {
     this._value.push(quote);
 
     return this;
@@ -62,7 +62,7 @@ export class Dataset {
    * @param quote - `Quote`.
    * @returns self reference.
    */
-  update(quote: Quote) {
+  update(quote: Quote<T>) {
     this._value[this._value.length - 1] = quote;
 
     return this;
@@ -73,7 +73,7 @@ export class Dataset {
    * @param indicators - Array of `Indicator`.
    * @returns self reference.
    */
-  apply(...indicators: Indicator<any>[]) {
+  apply(...indicators: Indicator<any, T>[]) {
     indicators.forEach(i => {
       i.spread(this);
     });

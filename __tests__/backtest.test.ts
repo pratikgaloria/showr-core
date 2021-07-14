@@ -1,6 +1,7 @@
-import { Backtest, BacktestReport, Dataset } from '../src';
-import { StrategyPoint } from '../src/strategy';
+import { Backtest, Dataset, Quote, Strategy } from '../src';
+import { StrategyValue } from '../src/strategy';
 import { sampleBacktest } from './mocks/mock-data';
+import { SMA } from './mocks/mock-sma';
 
 describe('Backtest', () => {
   const dataset = new Dataset(sampleBacktest.dataset);
@@ -14,7 +15,7 @@ describe('Backtest', () => {
         const strategyForQuote = q.getStrategy(strategy.name);
 
         expect(strategyForQuote).toBeTruthy();
-        expect(strategyForQuote).toBeInstanceOf(StrategyPoint);
+        expect(strategyForQuote).toBeInstanceOf(StrategyValue);
       });
     });
   });
@@ -25,7 +26,6 @@ describe('Backtest', () => {
       const backtestReport = backtest.analyze({
         capital: 100,
         tradingQuantity: 1,
-        attribute: 'close'
       });
 
       expect(backtestReport.numberOfTrades).toBe(1);
@@ -40,7 +40,6 @@ describe('Backtest', () => {
       const backtestReport = backtest.analyze({
         capital: 100,
         tradingQuantity: 1,
-        attribute: 'close'
       });
 
       expect(backtestReport.numberOfTrades).toBe(1);
@@ -48,55 +47,36 @@ describe('Backtest', () => {
       expect(backtestReport.returns).toBe(-3);
       expect(backtestReport.finalCapital).toBe(97);
     });
-  });
-});
 
-describe('BacktestReport', () => {
-  describe('constructor', () => {
-    it('Should initialize with initialCapital and other default values.', () => {
-      const backtestReport = new BacktestReport(1000);
+    it('Should run over a dataset with objects.', () => {
+      const dataset2 = new Dataset(sampleBacktest.dataset.map(v => ({ close: v })));
 
-      expect(backtestReport.initialCapital).toBe(1000);
-      expect(backtestReport.profit).toBe(0);
-      expect(backtestReport.loss).toBe(0);
-      expect(backtestReport.numberOfTrades).toBe(0);
-      expect(backtestReport.returns).toBe(0);
-      expect(backtestReport.finalCapital).toBe(1000);
-    });
-  });
+      const strategy2 = new Strategy(
+        'close-strategy',
+        (quote: Quote<{ close: number }>) => {
+          const sma2 = quote.getIndicator('sma2');
+    
+          if (!!sma2 && sma2 > 25) {
+            return new StrategyValue('entry');
+          }
+          if (!!sma2 && sma2 < 25) {
+            return new StrategyValue('exit');
+          }
+        },
+        [new SMA('sma2', { period: 2, attribute: 'close' })]
+      );
 
-  describe('markEntry', () => {
-    it('Should update capital accordingly for entry position.', () => {
-      const backtestReport = new BacktestReport(1000);
+      const backtest = new Backtest(dataset2, strategy2);
+      const backtestReport = backtest.analyze({
+        capital: 100,
+        tradingQuantity: 1,
+        attribute: 'close',
+      });
 
-      backtestReport.markEntry(50);
-      expect(backtestReport.finalCapital).toBe(950);
-    });
-  });
-
-  describe('markExit', () => {
-    it('Should update capital and other metrics accordingly for exit position in case of profit.', () => {
-      const backtestReport = new BacktestReport(1000);
-
-      backtestReport.markEntry(50);
-      backtestReport.markExit(100);
-
-      expect(backtestReport.finalCapital).toBe(1050);
-      expect(backtestReport.profit).toBe(50);
       expect(backtestReport.numberOfTrades).toBe(1);
-      expect(backtestReport.returns).toBe(5);
-    });
-
-    it('Should update capital and other metrics accordingly for exit position in case of loss.', () => {
-      const backtestReport = new BacktestReport(1000);
-
-      backtestReport.markEntry(50);
-      backtestReport.markExit(0);
-
-      expect(backtestReport.finalCapital).toBe(950);
-      expect(backtestReport.loss).toBe(50);
-      expect(backtestReport.numberOfTrades).toBe(1);
-      expect(backtestReport.returns).toBe(-5);
+      expect(backtestReport.loss).toBe(17);
+      expect(backtestReport.returns).toBe(-17);
+      expect(backtestReport.finalCapital).toBe(83);
     });
   });
 });

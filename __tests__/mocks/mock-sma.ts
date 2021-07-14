@@ -1,28 +1,33 @@
 import { Dataset, Indicator } from '../../src';
-import { EnumSymbols } from '../../src/enums/symbols.enum';
 
 interface IIndicatorParamsSMA {
   period?: number;
-  attribute?: keyof typeof EnumSymbols | string;
+  attribute?: string;
 }
 
-export class SMA extends Indicator<IIndicatorParamsSMA> {
+export class SMA<T = number> extends Indicator<IIndicatorParamsSMA, T> {
   constructor(name: string = 'SMA', params?: IIndicatorParamsSMA) {
     super(
       name,
-      function(this: SMA, dataset: Dataset) {
-        const attribute = this.params?.attribute || EnumSymbols.close;
-        const period = this.params?.period || 5;
-
+      function(dataset: Dataset<T>) {
+        const period = params?.period ?? 5;
         const datasetLength = dataset.value.length;
 
         if (datasetLength < period) {
-          return dataset.quotes[datasetLength - 1].getAttribute(attribute);
+          return Number(
+            params?.attribute
+              ? dataset.at(-1).getAttribute(params.attribute)
+              : dataset.at(-1).value
+          );
         }
 
         let total = 0;
         for (let i = datasetLength - period; i < datasetLength; i++) {
-          total += dataset.quotes[i].getAttribute(attribute);
+          total += Number(
+            params?.attribute
+              ? dataset.at(i).getAttribute(params.attribute)
+              : dataset.at(i).value
+          );
         }
 
         return total / period;

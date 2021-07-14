@@ -1,5 +1,5 @@
 import { Dataset, Quote, Indicator, Backtest } from '../src';
-import { StrategyPoint } from '../src/strategy';
+import { StrategyValue } from '../src/strategy';
 import { sampleIndicatorFn, sampleStrategy } from './mocks/mock-data';
 
 describe('Quote', () => {
@@ -8,14 +8,13 @@ describe('Quote', () => {
       const quote = new Quote(1);
 
       expect(quote).toHaveProperty('value');
-      expect(quote.value).toHaveProperty('close');
-      expect(quote.value.close).toBe(1);
+      expect(quote.value).toBe(1);
     });
 
-    it('Should create a valid Quote object for a given value and a key.', () => {
-      const quote = new Quote(1.345, 'open');
+    it('Should create a valid Quote object for a given value.', () => {
+      const quote = new Quote(1.345);
 
-      expect(quote.value).toStrictEqual({ open: 1.345 });
+      expect(quote.value).toBe(1.345);
     });
 
     it('Should create a valid Quote object for a given object.', () => {
@@ -25,7 +24,7 @@ describe('Quote', () => {
         open: 1.345,
         high: 5.44,
         low: 3.999,
-        close: 5.0,
+        close: 5,
       });
 
       expect(quote.value).toStrictEqual({
@@ -47,25 +46,6 @@ describe('Quote', () => {
     it('Should not throw an error if given value is 0.', () => {
       expect(() => new Quote('')).not.toThrow();
       expect(() => new Quote(0)).not.toThrow();
-    });
-  });
-
-  describe('extend', () => {
-    it('Should extend with a valid object value.', () => {
-      const quote = new Quote(1);
-
-      expect(quote.extend({ open: 2 }).value).toStrictEqual({
-        open: 2,
-        close: 1,
-      });
-    });
-
-    it('Should not extend with an array.', () => {
-      const quote = new Quote(1);
-
-      expect(quote.extend([2]).value).toStrictEqual({
-        close: 1,
-      });
     });
   });
 
@@ -92,7 +72,7 @@ describe('Quote', () => {
     });
   });
 
-  describe('getIndicators', () => {
+  describe('indicators', () => {
     it('Should return indicators of the quote if exists.', () => {
       const dataset = new Dataset([1, 2]);
       const multi2 = new Indicator(
@@ -106,9 +86,8 @@ describe('Quote', () => {
 
       dataset.apply(multi2, multi5);
       dataset.quotes.forEach(q => {
-        const indicators = q.getIndicators();
-        expect(indicators).toHaveProperty('multi2');
-        expect(indicators).toHaveProperty('multi5');
+        expect(q.indicators).toHaveProperty('multi2');
+        expect(q.indicators).toHaveProperty('multi5');
       });
     });
 
@@ -116,7 +95,7 @@ describe('Quote', () => {
       const ds = new Dataset([1, 2]);
 
       ds.quotes.forEach(q => {
-        expect(q.getIndicators()).toStrictEqual({});
+        expect(q.indicators).toStrictEqual({});
       });
     });
   });
@@ -146,7 +125,7 @@ describe('Quote', () => {
       const backtest = new Backtest(dataset, strategy);
 
       backtest.dataset.quotes.forEach(q => {
-        expect(q.getStrategy('new-strategy')).toBeInstanceOf(StrategyPoint);
+        expect(q.getStrategy('new-strategy')).toBeInstanceOf(StrategyValue);
       })
     });
 
@@ -166,8 +145,7 @@ describe('Quote', () => {
       const backtest = new Backtest(dataset, strategy);
       
       dataset.quotes.forEach(q => {
-        const strategies = q.getStrategies();
-        expect(strategies).toHaveProperty('new-strategy');
+        expect(q.strategies).toHaveProperty('new-strategy');
       });
     });
 
@@ -175,7 +153,7 @@ describe('Quote', () => {
       const ds = new Dataset([1, 2]);
 
       ds.quotes.forEach(q => {
-        expect(q.getStrategies()).toStrictEqual({});
+        expect(q.strategies).toStrictEqual({});
       });
     });
   });

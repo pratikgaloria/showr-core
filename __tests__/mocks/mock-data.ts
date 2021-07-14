@@ -1,12 +1,12 @@
 import { Dataset, Strategy, Quote, Indicator } from '../../src';
-import { StrategyPoint } from '../../src/strategy';
+import { StrategyValue } from '../../src/strategy';
 import { SMA } from './mock-sma';
 
 export const sampleIndicatorFn = (ds: Dataset) =>
-  ds.value[ds.value.length - 1].close * 5;
+  ds.value[ds.value.length - 1] * 5;
 
 export const sampleStrategy = (name: string) =>
-  new Strategy(name, (quote: Quote) => new StrategyPoint('entry'), [
+  new Strategy(name, () => new StrategyValue('entry'), [
     new Indicator('indicator1', sampleIndicatorFn),
   ]);
 
@@ -18,10 +18,10 @@ export const sampleBacktest = {
       const sma2 = quote.getIndicator('sma2');
 
       if (!!sma2 && sma2 > 25) {
-        return new StrategyPoint('entry');
+        return new StrategyValue('entry');
       }
       if (!!sma2 && sma2 < 25) {
-        return new StrategyPoint('exit');
+        return new StrategyValue('exit');
       }
     },
     [new SMA('sma2', { period: 2 })]
@@ -29,7 +29,6 @@ export const sampleBacktest = {
   configuration: {
     capital: 100,
     tradingQuantity: 1,
-    attribute: 'close',
   },
   report: {
     _currentCapital: 83,

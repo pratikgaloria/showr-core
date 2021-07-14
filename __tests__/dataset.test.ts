@@ -1,5 +1,4 @@
 import { Dataset, Quote, Indicator } from '../src';
-import { Keys } from '../src/enums/symbols.enum';
 import { sampleIndicatorFn } from './mocks/mock-data';
 
 describe('Dataset', () => {
@@ -15,25 +14,21 @@ describe('Dataset', () => {
       expect(dataset.value).toBeInstanceOf(Array);
       expect(dataset.value).toHaveLength(1);
 
-      expect(dataset.value[0]).toStrictEqual({ close: 1 });
+      expect(dataset.value[0]).toBe(1);
     });
 
     it('Should create a valid Dataset object for multiple values.', () => {
-      const dataset = new Dataset([0, 1, 2], 'open');
+      const dataset = new Dataset([0, 1, 2]);
 
       expect(dataset.value).toHaveLength(3);
-      expect(dataset.value).toStrictEqual([
-        { open: 0 },
-        { open: 1 },
-        { open: 2 },
-      ]);
+      expect(dataset.value).toStrictEqual([0, 1, 2]);
     });
 
     it('Should create a valid Dataset object for Quotes.', () => {
       const dataset = new Dataset([new Quote(10), new Quote(20)]);
 
       expect(dataset.value).toHaveLength(2);
-      expect(dataset.value).toStrictEqual([{ close: 10 }, { close: 20 }]);
+      expect(dataset.value).toStrictEqual([10, 20]);
     });
 
     it('Should create a valid Array of Quotes.', () => {
@@ -43,7 +38,7 @@ describe('Dataset', () => {
       expect(dataset.quotes).toHaveLength(1);
 
       expect(dataset.quotes[0]).toBeInstanceOf(Quote);
-      expect(dataset.quotes[0].value).toStrictEqual({ close: 1 });
+      expect(dataset.quotes[0].value).toStrictEqual(1);
     });
   });
 
@@ -51,19 +46,19 @@ describe('Dataset', () => {
     const dataset = new Dataset([1, 2, 3]);
 
     it('Should return first quote if called with 0.', () => {
-      expect(dataset.at(0).value).toStrictEqual({ close: 1 });
+      expect(dataset.at(0).value).toBe(1);
     });
 
     it('Should return second quote if called with 1.', () => {
-      expect(dataset.at(1).value).toStrictEqual({ close: 2 });
+      expect(dataset.at(1).value).toBe(2);
     });
 
     it('Should return last quote if called with -1.', () => {
-      expect(dataset.at(-1).value).toStrictEqual({ close: 3 });
+      expect(dataset.at(-1).value).toBe(3);
     });
 
     it('Should return second last quote if called with -2.', () => {
-      expect(dataset.at(-2).value).toStrictEqual({ close: 2 });
+      expect(dataset.at(-2).value).toBe(2);
     });
 
     it('Should return undefined for invalid index.', () => {
@@ -79,7 +74,7 @@ describe('Dataset', () => {
       dataset.add(quote);
 
       expect(dataset.quotes).toHaveLength(2);
-      expect(dataset.quotes[1].value).toStrictEqual({ close: 2 });
+      expect(dataset.quotes[1].value).toBe(2);
     });
   });
 
@@ -90,30 +85,27 @@ describe('Dataset', () => {
 
       dataset.apply(indicator);
 
-      expect(dataset.value).toHaveLength(1);
-      expect(dataset.value[0]).toHaveProperty(Keys.indicators);
-      expect(dataset.value).toStrictEqual([
-        { close: 1, [Keys.indicators]: { multi5: 5 } },
-      ]);
+      expect(dataset.quotes).toHaveLength(1);
+      expect(dataset.at(0).getIndicator('multi5')).toBe(5);
     });
 
     it('Should apply multiple indicators to the dataset.', () => {
       const dataset = new Dataset([5, 10]);
       const add2 = new Indicator(
         'add2',
-        ds => ds.value[ds.value.length - 1].close + 2
+        ds => ds.value[ds.value.length - 1] + 2
       );
       const min1 = new Indicator(
         'min1',
-        ds => ds.value[ds.value.length - 1].close - 1
+        ds => ds.value[ds.value.length - 1] - 1
       );
 
       dataset.apply(add2, min1);
 
-      expect(dataset.value).toStrictEqual([
-        { close: 5, [Keys.indicators]: { add2: 7, min1: 4 } },
-        { close: 10, [Keys.indicators]: { add2: 12, min1: 9 } },
-      ]);
+      expect(dataset.at(0).getIndicator('add2')).toBe(7);
+      expect(dataset.at(0).getIndicator('min1')).toBe(4);
+      expect(dataset.at(1).getIndicator('add2')).toBe(12);
+      expect(dataset.at(1).getIndicator('min1')).toBe(9);
     });
   });
 
