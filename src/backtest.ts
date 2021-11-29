@@ -1,4 +1,4 @@
-import { Dataset, Quote, Position, Strategy } from './';
+import { Dataset, Quote, TradePosition, Strategy } from './';
 import { BacktestReport } from './backtestReport';
 import { StrategyValue } from './strategy';
 
@@ -26,7 +26,7 @@ export class Backtest<P = any, T = number> {
     this._dataset = dataset;
     this._dataset.apply(...strategy.indicators);
 
-    const _position = new Position('idle');
+    const _position = new TradePosition('idle');
     this._dataset.quotes.forEach((quote: Quote<T>) => {
       _position.update(strategy.apply(quote)?.position);
 

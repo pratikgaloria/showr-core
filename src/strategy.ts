@@ -6,12 +6,12 @@ import {
   BacktestConfiguration,
   BacktestReport,
 } from './';
-import { PositionType } from './position';
+import { TradePositionType } from './position';
 
 export class StrategyValue {
-  position: PositionType | undefined;
+  position: TradePositionType | undefined;
 
-  constructor(position: PositionType | undefined) {
+  constructor(position: TradePositionType | undefined) {
     this.position = position;
   }
 }

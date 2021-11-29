@@ -4,4 +4,4 @@ export { Indicator, IndicatorOptions } from './indicator';
 export { Strategy, StrategyValue } from './strategy';
 export { Backtest, BacktestConfiguration } from './backtest';
 export { BacktestReport } from './backtestReport';
-export { Position } from './position';
+export { TradePosition } from './position';

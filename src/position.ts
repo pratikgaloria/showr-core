@@ -1,8 +1,8 @@
-export type PositionType = 'idle' | 'entry' | 'exit' | 'hold';
+export type TradePositionType = 'idle' | 'entry' | 'exit' | 'hold';
 
-export const newPositionMap: {
-  [currentPosition in PositionType]: {
-    [newPosition in PositionType]: PositionType;
+export const newTradingPositionMap: {
+  [currentTradingPosition in TradePositionType]: {
+    [newTradingPosition in TradePositionType]: TradePositionType;
   };
 } = {
   idle: {
@@ -31,10 +31,10 @@ export const newPositionMap: {
   },
 };
 
-export class Position {
-  protected _type: PositionType;
+export class TradePosition {
+  protected _type: TradePositionType;
 
-  constructor(type: PositionType) {
+  constructor(type: TradePositionType) {
     this._type = type;
   }
 
@@ -42,8 +42,8 @@ export class Position {
     return this._type;
   }
 
-  update(newPosition?: PositionType) {
-    this._type = newPositionMap[this._type][newPosition ?? this._type];
+  update(newPosition?: TradePositionType) {
+    this._type = newTradingPositionMap[this._type][newPosition ?? this._type];
 
     return this;
   }
