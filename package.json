@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "esbuild ./src --bundle --minify-whitespace --minify-syntax --outfile=dist/index.js",
+    "build": "ts-node ./src && esbuild ./src --bundle --minify-whitespace --minify-syntax --outfile=dist/index.js",
     "prepare": "npm run build",
     "test": "jest --coverage --no-cache",
     "test:build": "jest __tests__ --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",

@@ -13,7 +13,7 @@ export class Dataset<T = number> {
    */
   constructor(data?: T[]) {
     if (data) {
-      this._value = data.map(d => {
+      this._value = data.map((d) => {
         if (d instanceof Quote) {
           return d;
         }
@@ -26,11 +26,11 @@ export class Dataset<T = number> {
   }
 
   get value() {
-    return this._value.map(q => q.value);
+    return this._value.map((q) => q.value);
   }
 
   get quotes() {
-    return this._value.map(q => q);
+    return this._value.map((q) => q);
   }
 
   /**
@@ -73,8 +73,8 @@ export class Dataset<T = number> {
    * @param indicators - Array of `Indicator`.
    * @returns self reference.
    */
-  apply(...indicators: Indicator<any, T>[]) {
-    indicators.forEach(i => {
+  apply(...indicators: Indicator<unknown, T>[]) {
+    indicators.forEach((i) => {
       i.spread(this);
     });
 
@@ -87,6 +87,6 @@ export class Dataset<T = number> {
    * @returns flatten array.
    */
   flatten(attribute: string) {
-    return this.quotes.map(q => q.getAttribute(attribute));
+    return this.quotes.map((q) => q.getAttribute(attribute));
   }
 }

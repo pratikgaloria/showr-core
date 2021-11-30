@@ -12,7 +12,7 @@ export interface BacktestConfiguration {
 /**
  * Back-tests the strategy over a given dataset.
  */
-export class Backtest<P = any, T = number> {
+export class Backtest<P = unknown, T = number> {
   protected _dataset: Dataset<T>;
   protected _strategy: Strategy<P, T>;
 

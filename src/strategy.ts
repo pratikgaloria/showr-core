@@ -19,7 +19,7 @@ export class StrategyValue {
 /**
  * Defines a strategy that can be back-tested.
  */
-export class Strategy<P = any, T = number> {
+export class Strategy<P = unknown, T = number> {
   protected _name: string;
   protected _define: (quote: Quote<T>) => StrategyValue | undefined;
   protected _indicators: Indicator<P, T>[];
