@@ -11,7 +11,8 @@
     "test:build": "jest __tests__ --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "docs:generate": "typedoc --options ./typedoc.js",
     "lint": "eslint src --ext .ts",
-    "prettify": "prettier \"src/**/*.ts\" --config .prettierrc --write"
+    "prettify": "prettier \"src/**/*.ts\" --config .prettierrc --write",
+    "precommit": "lint-staged"
   },
   "repository": {
     "type": "git",
@@ -74,11 +75,6 @@
     "modulePaths": [
       "<rootDir>/src"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   },
   "lint-staged": {
     "src/**/*.ts": [
