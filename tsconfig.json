@@ -2,7 +2,7 @@
   "compilerOptions": {
     "module": "commonjs",
     "moduleResolution": "node",
-    "target": "ES2015",
+    "target": "ESNext",
     "declaration": true,
     "outDir": "./dist",
     "sourceMap": false,
@@ -13,7 +13,7 @@
     "rootDir": "src",
     "noUnusedLocals": false,
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*.ts",
