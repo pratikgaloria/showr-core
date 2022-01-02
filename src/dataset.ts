@@ -86,7 +86,24 @@ export class Dataset<T = number> {
    * @param attribute - The attribute.
    * @returns flatten array.
    */
-  flatten(attribute: string) {
-    return this.quotes.map((q) => q.getAttribute(attribute));
+  flatten(attribute?: string) {
+    return this.quotes.map((q) =>
+      attribute ? q.getAttribute(attribute) : q.value
+    );
+  }
+
+  /**
+   * get Value of the quote at the given position
+   * @param position - number, where 0 is first index, and -1 is the last index.
+   * @param attribute - Value of a specific attribute if any (Optional)
+   * @returns value.
+   */
+  valueAt(position: number, attribute?: string) {
+    const relativePosition =
+      position < 0 ? this._value.length + position : position;
+
+    return attribute
+      ? this.quotes[relativePosition].getAttribute(attribute)
+      : this.quotes[relativePosition].value;
   }
 }

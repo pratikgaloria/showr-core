@@ -93,11 +93,11 @@ describe('Dataset', () => {
       const dataset = new Dataset([5, 10]);
       const add2 = new Indicator(
         'add2',
-        ds => ds.value[ds.value.length - 1] + 2
+        (ds) => ds.value[ds.value.length - 1] + 2
       );
       const min1 = new Indicator(
         'min1',
-        ds => ds.value[ds.value.length - 1] - 1
+        (ds) => ds.value[ds.value.length - 1] - 1
       );
 
       dataset.apply(add2, min1);
@@ -117,6 +117,37 @@ describe('Dataset', () => {
       ]);
 
       expect(dataset.flatten('high')).toStrictEqual([15, 25]);
+    });
+
+    it('Should return the dataset value if no attribute provided.', () => {
+      const dataset = new Dataset([1, 2, 3]);
+
+      expect(dataset.flatten()).toStrictEqual(dataset.value);
+    });
+  });
+
+  describe('valueAt', () => {
+    const dataset = new Dataset([1, 2, 3]);
+
+    it('Should return the value of the first quote if called with 0.', () => {
+      expect(dataset.valueAt(0)).toBe(1);
+    });
+
+    it('Should return the value of the second quote if called with 1.', () => {
+      expect(dataset.valueAt(1)).toBe(2);
+    });
+
+    it('Should return the value of the last quote if called with -1.', () => {
+      expect(dataset.valueAt(-1)).toBe(3);
+    });
+
+    it('Should return the value of the specific attribute of the quote at the given position.', () => {
+      const dataset2 = new Dataset([
+        { close: 10 },
+        { close: 20 },
+        { close: 30 },
+      ]);
+      expect(dataset2.valueAt(1, 'close')).toBe(20);
     });
   });
 });
