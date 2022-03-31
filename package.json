@@ -81,7 +81,7 @@
   "lint-staged": {
     "src/**/*.ts": [
       "eslint src --ext .ts",
-      "prettier --single-quote --write"
+      "prettier \"src/**/*.ts\" --config .prettierrc --write"
     ]
   }
 }

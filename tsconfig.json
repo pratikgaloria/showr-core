@@ -2,7 +2,7 @@
   "compilerOptions": {
     "module": "CommonJS",
     "moduleResolution": "Node",
-    "target": "ESNext",
+    "target": "ES5",
     "declaration": true,
     "outDir": "./dist",
     "sourceMap": false,
