@@ -18,7 +18,6 @@ export class Quote<T = number> {
   /**
    * Creates a quote after type-casting the given value.
    * @param value - Any value.
-   * @param symbol - `key` of the value when converted to the object.
    */
   constructor(value: T) {
     this._value = this.sanitize(value);

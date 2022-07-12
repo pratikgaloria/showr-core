@@ -11,19 +11,17 @@ describe('Backtest', () => {
     it('Should run back-test over a given dataset for a given strategy.', async () => {
       const backtest = new Backtest(dataset, strategy);
 
-      backtest.dataset.quotes.forEach(q => {
-        const strategyForQuote = q.getStrategy(strategy.name);
-
-        expect(strategyForQuote).toBeTruthy();
-        expect(strategyForQuote).toBeInstanceOf(StrategyValue);
-      });
+      expect(backtest.dataset.strategies).toStrictEqual([{
+        name: strategy.name,
+        strategy,
+      }])
     });
   });
 
-  describe('analyze', () => {
+  describe('run', () => {
     it('Should return a report over a back-tested dataset for a given configuration.', () => {
       const backtest = new Backtest(dataset, strategy);
-      const backtestReport = backtest.analyze({
+      const backtestReport = backtest.run({
         capital: 100,
         tradingQuantity: 1,
       });
@@ -37,7 +35,7 @@ describe('Backtest', () => {
     it('Should exit the last trade and return a report if it was on hold.', () => {
       const dataset2 = new Dataset([20, 25, 22, 28, 35, 30, 25, 28, 32]);
       const backtest = new Backtest(dataset2, strategy);
-      const backtestReport = backtest.analyze({
+      const backtestReport = backtest.run({
         capital: 100,
         tradingQuantity: 1,
       });
@@ -67,7 +65,7 @@ describe('Backtest', () => {
       );
 
       const backtest = new Backtest(dataset2, strategy2);
-      const backtestReport = backtest.analyze({
+      const backtestReport = backtest.run({
         capital: 100,
         tradingQuantity: 1,
         attribute: 'close',

@@ -3,7 +3,7 @@ import { StrategyValue } from '../../src/strategy';
 import { SMA } from './mock-sma';
 
 export const sampleIndicatorFn = (ds: Dataset) =>
-  ds.value[ds.value.length - 1] * 5;
+  ds.quotes[ds.length - 1].value * 5;
 
 export const sampleStrategy = (name: string) =>
   new Strategy(name, () => new StrategyValue('entry'), [
