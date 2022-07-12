@@ -11,7 +11,7 @@ export class SMA<T = number> extends Indicator<IIndicatorParamsSMA, T> {
       name,
       function(dataset: Dataset<T>) {
         const period = params?.period ?? 5;
-        const datasetLength = dataset.value.length;
+        const datasetLength = dataset.length;
 
         if (datasetLength < period) {
           return Number(

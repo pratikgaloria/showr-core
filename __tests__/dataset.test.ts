@@ -1,34 +1,38 @@
-import { Dataset, Quote, Indicator } from '../src';
-import { sampleIndicatorFn } from './mocks/mock-data';
+//import '@types/jest';
+import { Dataset, Quote, Indicator, Strategy, StrategyValue } from '../src';
+import { IndicatorMetadata, StrategyMetadata } from '../src/dataset';
+import { sampleIndicatorFn, sampleStrategy } from './mocks/mock-data';
 
 describe('Dataset', () => {
   describe('constructor', () => {
     it('Should be created without values.', () => {
-      expect(new Dataset().value).toStrictEqual([]);
+      const dataset = new Dataset();
+
+      expect(dataset.quotes).toStrictEqual([]);
+      expect(dataset.indicators).toStrictEqual([]);
+      expect(dataset.strategies).toStrictEqual([]);
     });
 
     it('Should create a valid Dataset object for given values.', () => {
       const dataset = new Dataset([1]);
 
-      expect(dataset).toHaveProperty('value');
-      expect(dataset.value).toBeInstanceOf(Array);
-      expect(dataset.value).toHaveLength(1);
+      expect(dataset).toHaveProperty('quotes');
+      expect(dataset.quotes).toBeInstanceOf(Array);
+      expect(dataset.quotes).toHaveLength(1);
 
-      expect(dataset.value[0]).toBe(1);
+      expect(dataset.quotes[0].value).toBe(1);
     });
 
     it('Should create a valid Dataset object for multiple values.', () => {
       const dataset = new Dataset([0, 1, 2]);
 
-      expect(dataset.value).toHaveLength(3);
-      expect(dataset.value).toStrictEqual([0, 1, 2]);
+      expect(dataset.quotes).toHaveLength(3);
     });
 
     it('Should create a valid Dataset object for Quotes.', () => {
       const dataset = new Dataset([new Quote(10), new Quote(20)]);
 
-      expect(dataset.value).toHaveLength(2);
-      expect(dataset.value).toStrictEqual([10, 20]);
+      expect(dataset.quotes).toHaveLength(2);
     });
 
     it('Should create a valid Array of Quotes.', () => {
@@ -41,6 +45,36 @@ describe('Dataset', () => {
       expect(dataset.quotes[0].value).toStrictEqual(1);
     });
   });
+
+  describe('setIndicator', () => {
+    it('Should add a given indicator metadata to indicators property', () => {
+      const dataset = new Dataset([1, 2, 3]);
+      const sma2 = new Indicator('sma2', sampleIndicatorFn);
+      const indicatorMetadata: IndicatorMetadata<number> = {
+        appliedUntilIndex: 1,
+        indicator: sma2,
+        name: 'sma2'
+      };
+
+      dataset.setIndicator(indicatorMetadata);
+      expect(dataset.indicators).toStrictEqual([indicatorMetadata]);
+    });
+  });
+
+  describe('setStrategy', () => {
+    it('Should add a given strategy metadata to strategies property', () => {
+      const dataset = new Dataset([1, 2, 3]);
+      const sma2 = new Indicator('sma2', sampleIndicatorFn);
+      const strategyMetadata: StrategyMetadata<number> = {
+        appliedUntilIndex: 1,
+        strategy: new Strategy('buy-above-sma', () => new StrategyValue('entry'), [sma2]),
+        name: 'sma2'
+      };
+
+      dataset.setStrategy(strategyMetadata);
+      expect(dataset.strategies).toStrictEqual([strategyMetadata]);
+    });
+  })
 
   describe('at', () => {
     const dataset = new Dataset([1, 2, 3]);
@@ -76,6 +110,27 @@ describe('Dataset', () => {
       expect(dataset.quotes).toHaveLength(2);
       expect(dataset.quotes[1].value).toBe(2);
     });
+
+    it('Should apply an indicator to the new Quote if exists', () => {
+      const dataset = new Dataset([1]);
+      const sma2 = new Indicator('sma2', sampleIndicatorFn);
+      dataset.apply(sma2);
+
+      const quote = new Quote(2);
+      dataset.add(quote);
+
+      expect(dataset.quotes[1].getIndicator('sma2')).toBe(10);
+    });
+
+    it('Should apply a strategy to the new Quote if exists', () => {
+      const dataset = new Dataset([1]);
+      dataset.prepare(sampleStrategy('sample-strategy'));
+      
+      const quote = new Quote(2);
+      dataset.add(quote);
+
+      expect(dataset.quotes[1].getStrategy('sample-strategy').position).toBe('entry');
+    });
   });
 
   describe('apply', () => {
@@ -87,17 +142,22 @@ describe('Dataset', () => {
 
       expect(dataset.quotes).toHaveLength(1);
       expect(dataset.at(0).getIndicator('multi5')).toBe(5);
+      expect(dataset.indicators).toStrictEqual([{
+        name: 'multi5',
+        appliedUntilIndex: 0,
+        indicator
+      }]);
     });
 
     it('Should apply multiple indicators to the dataset.', () => {
       const dataset = new Dataset([5, 10]);
       const add2 = new Indicator(
         'add2',
-        (ds) => ds.value[ds.value.length - 1] + 2
+        (ds) => ds.quotes[ds.length - 1].value + 2
       );
       const min1 = new Indicator(
         'min1',
-        (ds) => ds.value[ds.value.length - 1] - 1
+        (ds) => ds.quotes[ds.length - 1].value - 1
       );
 
       dataset.apply(add2, min1);
@@ -106,6 +166,42 @@ describe('Dataset', () => {
       expect(dataset.at(0).getIndicator('min1')).toBe(4);
       expect(dataset.at(1).getIndicator('add2')).toBe(12);
       expect(dataset.at(1).getIndicator('min1')).toBe(9);
+
+      expect(dataset.indicators).toStrictEqual([
+        {
+          name: 'add2',
+          appliedUntilIndex: 1,
+          indicator: add2,
+        },
+        {
+          name: 'min1',
+          appliedUntilIndex: 1,
+          indicator: min1,
+        }
+      ]);
+    });
+  });
+
+  describe('prepare', () => {
+    it('Should prepare the dataset by applying a given strategy.', () => {
+      const dataset = new Dataset([5, 10]);
+      const indicator = new Indicator('sma2', sampleIndicatorFn);
+      const strategy = new Strategy('sample-strategy', () => new StrategyValue('entry'), [indicator]);
+      dataset.prepare(strategy);
+
+      expect(dataset.quotes[0].getStrategy('sample-strategy').position).toBe('entry');
+      expect(dataset.quotes[1].getStrategy('sample-strategy').position).toBe('hold');
+      
+      expect(dataset.strategies).toStrictEqual([{
+        name: 'sample-strategy',
+        appliedUntilIndex: 1,
+        strategy,
+      }]);
+      expect(dataset.indicators).toStrictEqual([{
+        name: 'sma2',
+        appliedUntilIndex: 1,
+        indicator,
+      }]);
     });
   });
 
@@ -122,7 +218,27 @@ describe('Dataset', () => {
     it('Should return the dataset value if no attribute provided.', () => {
       const dataset = new Dataset([1, 2, 3]);
 
-      expect(dataset.flatten()).toStrictEqual(dataset.value);
+      expect(dataset.flatten()).toStrictEqual([1, 2, 3]);
+    });
+  });
+
+  describe('mutateAt', () => {
+    it('Should mutate the first quote if called with 0.', () => {
+      const dataset = new Dataset([1, 2, 3]);
+      dataset.mutateAt(0, new Quote(0));
+      expect(dataset.flatten()).toStrictEqual([0, 2, 3]);
+    });
+
+    it('Should mutate the second quote if called with 1.', () => {
+      const dataset = new Dataset([1, 2, 3]);
+      dataset.mutateAt(1, new Quote(0));
+      expect(dataset.flatten()).toStrictEqual([1, 0, 3]);
+    });
+
+    it('Should mutate the last quote if called with -1.', () => {
+      const dataset = new Dataset([1, 2, 3]);
+      dataset.mutateAt(-1, new Quote(0));
+      expect(dataset.flatten()).toStrictEqual([1, 2, 0]);
     });
   });
 

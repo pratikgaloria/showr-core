@@ -1,19 +1,35 @@
-import { Quote, Indicator } from './';
+import { Quote, Indicator, Strategy, StrategyValue, TradePosition } from './';
+
+export type IndicatorMetadata<T> = {
+  name: string;
+  appliedUntilIndex: number;
+  indicator: Indicator<unknown, T>;
+}
+
+export type StrategyMetadata<T> = {
+  name: string;
+  appliedUntilIndex: number;
+  strategy: Strategy<unknown, T>;
+}
 
 /**
  * Creates a dataset out of data, where data is an array of any numeric values.
  */
 export class Dataset<T = number> {
-  protected _value: Quote<T>[];
+  protected _quotes: Quote<T>[];
+  protected _indicators: IndicatorMetadata<T>[];
+  protected _strategies: StrategyMetadata<T>[];
 
   /**
    * Creates a dataset after type-casting given data values to quotes.
    * @param data - Array of `any` type of values or `Quote`.
-   * @param [symbol] - If provided, each array item will be converted into a { key: value } pair where `key` would be a given symbol.
    */
   constructor(data?: T[]) {
+    this._indicators = [];
+    this._strategies = [];
+
     if (data) {
-      this._value = data.map((d) => {
+      this._quotes = data.map((d) => {
         if (d instanceof Quote) {
           return d;
         }
@@ -21,16 +37,36 @@ export class Dataset<T = number> {
         return new Quote(d);
       });
     } else {
-      this._value = [];
+      this._quotes = [];
     }
   }
 
-  get value() {
-    return this._value.map((q) => q.value);
+  get quotes() {
+    return this._quotes;
   }
 
-  get quotes() {
-    return this._value.map((q) => q);
+  get length() {
+    return this._quotes.length;
+  }
+
+  get indicators() {
+    return this._indicators;
+  }
+
+  get strategies() {
+    return this._strategies;
+  }
+
+  setIndicator(metadata: IndicatorMetadata<T>) {
+    this._indicators.push(metadata);
+
+    return this;
+  }
+
+  setStrategy(metadata: StrategyMetadata<T>) {
+    this._strategies.push(metadata);
+
+    return this;
   }
 
   /**
@@ -40,7 +76,7 @@ export class Dataset<T = number> {
    */
   at(position: number) {
     if (position < 0) {
-      return this.quotes[this._value.length + position];
+      return this.quotes[this.length + position];
     } else {
       return this.quotes[position];
     }
@@ -52,20 +88,58 @@ export class Dataset<T = number> {
    * @returns self reference.
    */
   add(quote: Quote<T>) {
-    this._value.push(quote);
+    this.quotes.push(quote);
+
+    this.indicators.forEach(i => {
+      const quoteWithIndicator = quote.setIndicator(
+        i.name,
+        i.indicator.calculate(this)
+      );
+
+      this.mutateAt(-1, quoteWithIndicator);
+    });
+
+    this.strategies.forEach(s => {
+      const quoteWithStrategy = quote.setStrategy(
+        s.name,
+        new StrategyValue(s.strategy.apply(quote)?.position),
+      );
+
+      this.mutateAt(-1, quoteWithStrategy);
+    });
 
     return this;
   }
 
   /**
-   * Updates the last quote of the dataset with the given quote.
-   * @param quote - `Quote`.
+   * Mutates the quote at the given position
+   * @param at - number, where 0 is first index, and -1 is the last index. 
+   * @param quote - `Quote` to mutate with.
    * @returns self reference.
    */
-  update(quote: Quote<T>) {
-    this._value[this._value.length - 1] = quote;
+  mutateAt(at: number, quote: Quote<T>) {
+    if (at < 0) {
+      this.quotes[this.length + at] = quote;
+    } else {
+      this.quotes[at] = quote;
+    }
 
     return this;
+  }
+
+  /**
+   * get Value of the quote at the given position
+   * @param position - number, where 0 is first index, and -1 is the last index.
+   * @param attribute - Value of a specific attribute if any (Optional)
+   * @returns value.
+   */
+  valueAt(position: number, attribute?: string) {
+    const relativePosition =
+      position < 0 ? this.length + position : position;
+
+    return attribute
+      ? this.quotes[relativePosition].getAttribute(attribute)
+      : this.quotes[relativePosition].value;
   }
 
   /**
@@ -74,11 +148,34 @@ export class Dataset<T = number> {
    * @returns self reference.
    */
   apply(...indicators: Indicator<unknown, T>[]) {
-    indicators.forEach((i) => {
-      i.spread(this);
-    });
+    for (const indicator of indicators) {
+      indicator.spread(this);
+
+      this.setIndicator({
+        name: indicator.name,
+        appliedUntilIndex: this.length - 1,
+        indicator,
+      });
+    }
 
     return this;
+  }
+
+  prepare(strategy: Strategy<unknown, T>) {
+    this.apply(...strategy.indicators);
+
+    const position = new TradePosition('idle');
+    this.quotes.forEach((quote: Quote<T>) => {
+      position.update(strategy.apply(quote)?.position);
+
+      quote.setStrategy(strategy.name, new StrategyValue(position.value));
+    });
+
+    this.setStrategy({
+      name: strategy.name,
+      appliedUntilIndex: this.length - 1,
+      strategy,
+    });
   }
 
   /**
@@ -90,20 +187,5 @@ export class Dataset<T = number> {
     return this.quotes.map((q) =>
       attribute ? q.getAttribute(attribute) : q.value
     );
-  }
-
-  /**
-   * get Value of the quote at the given position
-   * @param position - number, where 0 is first index, and -1 is the last index.
-   * @param attribute - Value of a specific attribute if any (Optional)
-   * @returns value.
-   */
-  valueAt(position: number, attribute?: string) {
-    const relativePosition =
-      position < 0 ? this._value.length + position : position;
-
-    return attribute
-      ? this.quotes[relativePosition].getAttribute(attribute)
-      : this.quotes[relativePosition].value;
   }
 }

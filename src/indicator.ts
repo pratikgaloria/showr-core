@@ -66,7 +66,7 @@ export class Indicator<P, T = number> {
         this.calculate(emptyDataset.add(quote))
       );
 
-      emptyDataset.update(quoteWithIndicator);
+      emptyDataset.mutateAt(-1, quoteWithIndicator);
     });
 
     return dataset;

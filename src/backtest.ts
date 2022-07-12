@@ -1,6 +1,5 @@
-import { Dataset, Quote, TradePosition, Strategy } from './';
+import { Dataset, Quote, Strategy } from './';
 import { BacktestReport } from './backtestReport';
-import { StrategyValue } from './strategy';
 
 export interface BacktestConfiguration {
   capital: number;
@@ -17,21 +16,15 @@ export class Backtest<P = unknown, T = number> {
   protected _strategy: Strategy<P, T>;
 
   /**
-   * Runs back-test over a dataset for a given strategy that can be analyzed.
+   * Runs a back-test over a dataset for a given strategy.
    * @param dataset - `Dataset` over which strategy should be back-tested.
    * @param strategy - `Strategy` that should be back-tested.
    */
   constructor(dataset: Dataset<T>, strategy: Strategy<P, T>) {
     this._strategy = strategy;
     this._dataset = dataset;
-    this._dataset.apply(...strategy.indicators);
 
-    const _position = new TradePosition('idle');
-    this._dataset.quotes.forEach((quote: Quote<T>) => {
-      _position.update(strategy.apply(quote)?.position);
-
-      quote.setStrategy(strategy.name, new StrategyValue(_position.value));
-    });
+    this._dataset.prepare(strategy);
   }
 
   get strategy() {
@@ -52,22 +45,22 @@ export class Backtest<P = unknown, T = number> {
     const report = new BacktestReport(configuration.capital);
 
     this._dataset.quotes.forEach((quote: Quote<T>, index, array) => {
-      const _positionValue = quote.getStrategy(this.strategy.name).position;
-      const _attributeValue = attribute
+      const positionValue = quote.getStrategy(this.strategy.name).position;
+      const attributeValue = attribute
         ? quote.getAttribute(attribute)
         : quote.value;
-      const _tradeValue = _attributeValue * tradingQuantity;
+      const tradeValue = attributeValue * tradingQuantity;
 
       if (
         index === array.length - 1 &&
-        (_positionValue === 'entry' || _positionValue === 'hold')
+        (positionValue === 'entry' || positionValue === 'hold')
       ) {
-        report.markExit(_tradeValue);
+        report.markExit(tradeValue);
       } else {
-        if (_positionValue === 'entry') {
-          report.markEntry(_tradeValue);
-        } else if (_positionValue === 'exit') {
-          report.markExit(_tradeValue);
+        if (positionValue === 'entry') {
+          report.markEntry(tradeValue);
+        } else if (positionValue === 'exit') {
+          report.markExit(tradeValue);
         }
       }
     });
