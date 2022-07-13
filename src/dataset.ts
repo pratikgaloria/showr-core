@@ -2,13 +2,11 @@ import { Quote, Indicator, Strategy, StrategyValue, TradePosition } from './';
 
 export type IndicatorMetadata<T> = {
   name: string;
-  appliedUntilIndex: number;
   indicator: Indicator<unknown, T>;
 }
 
 export type StrategyMetadata<T> = {
   name: string;
-  appliedUntilIndex: number;
   strategy: Strategy<unknown, T>;
 }
 
@@ -153,7 +151,6 @@ export class Dataset<T = number> {
 
       this.setIndicator({
         name: indicator.name,
-        appliedUntilIndex: this.length - 1,
         indicator,
       });
     }
@@ -173,7 +170,6 @@ export class Dataset<T = number> {
 
     this.setStrategy({
       name: strategy.name,
-      appliedUntilIndex: this.length - 1,
       strategy,
     });
   }

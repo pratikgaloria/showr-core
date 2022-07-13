@@ -36,11 +36,11 @@ export class Backtest<P = unknown, T = number> {
   }
 
   /**
-   * Creates a report with profit and other metrics over a back-tested dataset.
+   * Runs the back-test over a dataset with the given configuration and returns report.
    * @param configuration - `BacktestConfiguration` with trading quantity and capital.
    * @returns `BacktestReport`.
    */
-  analyze(configuration: BacktestConfiguration) {
+  run(configuration: BacktestConfiguration) {
     const { attribute, tradingQuantity } = configuration;
     const report = new BacktestReport(configuration.capital);
 

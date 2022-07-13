@@ -16,20 +16,18 @@ describe('Trader', () => {
   }, [indicator]);
 
   describe('constructor', () => {
-    it('Should apply strategy over a given dataset.', async () => {
+    it('Should apply a strategy over a given dataset.', async () => {
       const trader = new Trader(dataset, strategy);
 
-      trader.dataset.quotes.forEach(q => {
-        const strategyForQuote = q.getStrategy(strategy.name);
-
-        expect(strategyForQuote).toBeTruthy();
-        expect(strategyForQuote).toBeInstanceOf(StrategyValue);
-      });
+      expect(trader.dataset.strategies).toStrictEqual([{
+        name: 'buy-if-sma2-is-above-25',
+        strategy
+      }])
     });
   });
 
   describe('tick', () => {
-    it('Should return a strategy position over a new quote.', () => {
+    it('Should calculate a new position for a new quote.', () => {
       const trader = new Trader(dataset, strategy);
       const newPosition = trader.tick(new Quote(40));
 

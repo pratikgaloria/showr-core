@@ -19,7 +19,7 @@ describe('Strategy', () => {
       const strategyFn = jest.fn();
       const indicator = new Indicator(
         'indicator',
-        (ds: Dataset) => ds.value[0] + 1
+        (ds: Dataset) => ds.valueAt(-1) + 1
       );
       const strategy = new Strategy('strategy', strategyFn, [indicator]);
 

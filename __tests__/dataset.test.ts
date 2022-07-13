@@ -51,7 +51,6 @@ describe('Dataset', () => {
       const dataset = new Dataset([1, 2, 3]);
       const sma2 = new Indicator('sma2', sampleIndicatorFn);
       const indicatorMetadata: IndicatorMetadata<number> = {
-        appliedUntilIndex: 1,
         indicator: sma2,
         name: 'sma2'
       };
@@ -66,7 +65,6 @@ describe('Dataset', () => {
       const dataset = new Dataset([1, 2, 3]);
       const sma2 = new Indicator('sma2', sampleIndicatorFn);
       const strategyMetadata: StrategyMetadata<number> = {
-        appliedUntilIndex: 1,
         strategy: new Strategy('buy-above-sma', () => new StrategyValue('entry'), [sma2]),
         name: 'sma2'
       };
@@ -144,7 +142,6 @@ describe('Dataset', () => {
       expect(dataset.at(0).getIndicator('multi5')).toBe(5);
       expect(dataset.indicators).toStrictEqual([{
         name: 'multi5',
-        appliedUntilIndex: 0,
         indicator
       }]);
     });
@@ -170,12 +167,10 @@ describe('Dataset', () => {
       expect(dataset.indicators).toStrictEqual([
         {
           name: 'add2',
-          appliedUntilIndex: 1,
           indicator: add2,
         },
         {
           name: 'min1',
-          appliedUntilIndex: 1,
           indicator: min1,
         }
       ]);
@@ -194,12 +189,10 @@ describe('Dataset', () => {
       
       expect(dataset.strategies).toStrictEqual([{
         name: 'sample-strategy',
-        appliedUntilIndex: 1,
         strategy,
       }]);
       expect(dataset.indicators).toStrictEqual([{
         name: 'sma2',
-        appliedUntilIndex: 1,
         indicator,
       }]);
     });

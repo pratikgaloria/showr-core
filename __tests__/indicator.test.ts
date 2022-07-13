@@ -27,7 +27,7 @@ describe('Indicator', () => {
         function(this: Indicator<SampleIndicatorParams>, ds: Dataset) {
           const { period = 10 } = this.params as SampleIndicatorParams;
 
-          return ds.value[0] / period;
+          return ds.valueAt(-1) / period;
         },
         { params: { period: 5 } }
       );
