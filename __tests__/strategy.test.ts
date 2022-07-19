@@ -1,4 +1,4 @@
-import { Strategy, Indicator, Dataset, Quote } from '../src';
+import { Strategy, Indicator, Dataset, Quote, StrategyValue } from '../src';
 import { sampleStrategy, sampleBacktest } from './mocks/mock-data';
 
 describe('Strategy', () => {
@@ -15,12 +15,13 @@ describe('Strategy', () => {
   });
 
   describe('apply', () => {
+    const indicator = new Indicator(
+      'indicator',
+      (ds: Dataset) => ds.valueAt(-1) + 1
+    );
+
     it('Should apply strategy over a given Quote', () => {
       const strategyFn = jest.fn();
-      const indicator = new Indicator(
-        'indicator',
-        (ds: Dataset) => ds.valueAt(-1) + 1
-      );
       const strategy = new Strategy('strategy', strategyFn, [indicator]);
 
       const quote = new Quote(1);
@@ -31,6 +32,18 @@ describe('Strategy', () => {
       expect(strategyFn).toHaveBeenCalled();
       expect(strategyFn).toHaveBeenCalledWith(quote);
     });
+
+    it('Should be able to set metadata along with the strategy value', () => {
+      const strategy = new Strategy('strategy', () => new StrategyValue('entry', { price: 'open' }), [indicator]);
+
+      const quote = new Quote(1);
+      quote.setIndicator('indicator', 2);
+
+      const value = strategy.apply(quote);
+
+      expect(value?.position).toBe('entry');
+      expect(value?.meta?.price).toBe('open');
+    })
   });
 
   describe('backtest', () => {
@@ -40,7 +53,11 @@ describe('Strategy', () => {
 
       const backtestReport = strategy.backtest(
         ds,
-        sampleBacktest.configuration
+        {
+          config: sampleBacktest.configuration,
+          onEntry: (quote) => quote.value * 1,
+          onExit: (quote) => quote.value * 1,
+        }
       );
 
       expect(backtestReport).toEqual(

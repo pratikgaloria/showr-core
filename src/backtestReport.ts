@@ -2,14 +2,17 @@
  * Creates a back-test report.
  */
 export class BacktestReport {
-  _currentCapital: number;
+  currentCapital: number;
 
   profit: number;
   loss: number;
   numberOfTrades: number;
+  numberOfLosingTrades: number;
+  numberOfWinningTrades: number;
   initialCapital: number;
   finalCapital: number;
   returns: number;
+  winningRate: number;
 
   /**
    * Defines the initial capital for the back-test.
@@ -19,11 +22,14 @@ export class BacktestReport {
     this.profit = 0;
     this.loss = 0;
     this.numberOfTrades = 0;
+    this.numberOfLosingTrades = 0;
+    this.numberOfWinningTrades = 0;
     this.initialCapital = initialCapital;
     this.finalCapital = initialCapital;
 
     this.returns = 0;
-    this._currentCapital = initialCapital;
+    this.winningRate = 0;
+    this.currentCapital = initialCapital;
   }
 
   private updateCapital(value: number) {
@@ -50,14 +56,19 @@ export class BacktestReport {
    */
   markExit(tradedValue: number) {
     this.updateCapital(tradedValue);
+    const hasWon = this.finalCapital > this.currentCapital;
 
-    if (this._currentCapital > this.finalCapital) {
-      this.loss += this._currentCapital - this.finalCapital;
+    if (hasWon) {
+      this.profit += this.finalCapital - this.currentCapital;
+      this.numberOfWinningTrades += 1;
     } else {
-      this.profit += this.finalCapital - this._currentCapital;
+      this.loss += this.currentCapital - this.finalCapital;
+      this.numberOfLosingTrades += 1;
     }
 
-    this._currentCapital = this.finalCapital;
+    this.winningRate = this.numberOfWinningTrades / (this.numberOfWinningTrades + this.numberOfLosingTrades);
+
+    this.currentCapital = this.finalCapital;
     this.updateTotals();
   }
 }

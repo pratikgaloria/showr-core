@@ -120,14 +120,24 @@ describe('Dataset', () => {
       expect(dataset.quotes[1].getIndicator('sma2')).toBe(10);
     });
 
-    it('Should apply a strategy to the new Quote if exists', () => {
+    it('Should apply a strategy to the new Quote in the empty dataset', () => {
+      const dataset = new Dataset();
+      dataset.prepare(sampleStrategy('sample-strategy'));
+      
+      const quote = new Quote(2);
+      dataset.add(quote);
+
+      expect(dataset.quotes[0].getStrategy('sample-strategy').position).toBe('entry');
+    });
+
+    it('Should apply a strategy to the new Quote based on the previous quote', () => {
       const dataset = new Dataset([1]);
       dataset.prepare(sampleStrategy('sample-strategy'));
       
       const quote = new Quote(2);
       dataset.add(quote);
 
-      expect(dataset.quotes[1].getStrategy('sample-strategy').position).toBe('entry');
+      expect(dataset.quotes[1].getStrategy('sample-strategy').position).toBe('hold');
     });
   });
 

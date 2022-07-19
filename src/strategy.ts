@@ -3,25 +3,27 @@ import {
   Dataset,
   Indicator,
   Backtest,
-  BacktestConfiguration,
   BacktestReport,
 } from './';
+import { BacktestRunner } from './backtest';
 import { TradePositionType } from './position';
 
-export class StrategyValue {
+export class StrategyValue<V = unknown> {
   position: TradePositionType | undefined;
+  meta?: V;
 
-  constructor(position: TradePositionType | undefined) {
+  constructor(position: TradePositionType | undefined, meta?: V) {
     this.position = position;
+    this.meta = meta;
   }
 }
 
 /**
  * Defines a strategy that can be back-tested.
  */
-export class Strategy<P = unknown, T = number> {
+export class Strategy<P = unknown, T = number, V = unknown> {
   protected _name: string;
-  protected _define: (quote: Quote<T>) => StrategyValue | undefined;
+  protected _define: (quote: Quote<T>) => StrategyValue<V> | undefined;
   protected _indicators: Indicator<P, T>[];
 
   /**
@@ -32,7 +34,7 @@ export class Strategy<P = unknown, T = number> {
    */
   constructor(
     name: string,
-    define: (quote: Quote<T>) => StrategyValue | undefined,
+    define: (quote: Quote<T>) => StrategyValue<V> | undefined,
     indicators: Indicator<P, T>[]
   ) {
     this._name = name;
@@ -65,8 +67,8 @@ export class Strategy<P = unknown, T = number> {
    */
   backtest(
     dataset: Dataset<T>,
-    configuration: BacktestConfiguration
+    runner: BacktestRunner<T>,
   ): BacktestReport {
-    return new Backtest(dataset, this).run(configuration);
+    return new Backtest(dataset, this).run(runner);
   }
 }

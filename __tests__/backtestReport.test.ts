@@ -33,6 +33,9 @@ describe('BacktestReport', () => {
       expect(backtestReport.finalCapital).toBe(1050);
       expect(backtestReport.profit).toBe(50);
       expect(backtestReport.numberOfTrades).toBe(1);
+      expect(backtestReport.numberOfLosingTrades).toBe(0);
+      expect(backtestReport.numberOfWinningTrades).toBe(1);
+      expect(backtestReport.winningRate).toBe(1);
       expect(backtestReport.returns).toBe(5);
     });
 
@@ -45,6 +48,9 @@ describe('BacktestReport', () => {
       expect(backtestReport.finalCapital).toBe(950);
       expect(backtestReport.loss).toBe(50);
       expect(backtestReport.numberOfTrades).toBe(1);
+      expect(backtestReport.numberOfLosingTrades).toBe(1);
+      expect(backtestReport.numberOfWinningTrades).toBe(0);
+      expect(backtestReport.winningRate).toBe(0);
       expect(backtestReport.returns).toBe(-5);
     });
   });

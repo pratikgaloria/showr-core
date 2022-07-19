@@ -22,8 +22,9 @@ describe('Backtest', () => {
     it('Should return a report over a back-tested dataset for a given configuration.', () => {
       const backtest = new Backtest(dataset, strategy);
       const backtestReport = backtest.run({
-        capital: 100,
-        tradingQuantity: 1,
+        config: { capital: 100 },
+        onEntry: (quote) => quote.value * 1,
+        onExit: (quote) => quote.value * 1,
       });
 
       expect(backtestReport.numberOfTrades).toBe(1);
@@ -36,8 +37,9 @@ describe('Backtest', () => {
       const dataset2 = new Dataset([20, 25, 22, 28, 35, 30, 25, 28, 32]);
       const backtest = new Backtest(dataset2, strategy);
       const backtestReport = backtest.run({
-        capital: 100,
-        tradingQuantity: 1,
+        config: { capital: 100 },
+        onEntry: (quote) => quote.value * 1,
+        onExit: (quote) => quote.value * 1,
       });
 
       expect(backtestReport.numberOfTrades).toBe(1);
@@ -53,7 +55,7 @@ describe('Backtest', () => {
         'close-strategy',
         (quote: Quote<{ close: number }>) => {
           const sma2 = quote.getIndicator('sma2');
-    
+
           if (!!sma2 && sma2 > 25) {
             return new StrategyValue('entry');
           }
@@ -66,9 +68,9 @@ describe('Backtest', () => {
 
       const backtest = new Backtest(dataset2, strategy2);
       const backtestReport = backtest.run({
-        capital: 100,
-        tradingQuantity: 1,
-        attribute: 'close',
+        config: { capital: 100 },
+        onEntry: (quote) => quote.getAttribute('close') * 1,
+        onExit: (quote) => quote.getAttribute('close') * 1,
       });
 
       expect(backtestReport.numberOfTrades).toBe(1);

@@ -98,9 +98,13 @@ export class Dataset<T = number> {
     });
 
     this.strategies.forEach(s => {
+      const lastPosition = this.length > 1 ? this.at(-2).getStrategy(s.name).position ?? 'idle' : 'idle';
+      const newPosition = s.strategy.apply(quote)?.position;
+      const updatedPosition = new TradePosition(lastPosition).update(newPosition);
+
       const quoteWithStrategy = quote.setStrategy(
         s.name,
-        new StrategyValue(s.strategy.apply(quote)?.position),
+        new StrategyValue(updatedPosition.value),
       );
 
       this.mutateAt(-1, quoteWithStrategy);

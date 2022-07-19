@@ -3,10 +3,15 @@ import { BacktestReport } from './backtestReport';
 
 export interface BacktestConfiguration {
   capital: number;
-  tradingQuantity: number;
-  attribute?: string;
   name?: string;
 }
+
+export type BacktestTrigger<T> = (quote: Quote<T>, index: number, quotes: Quote<T>[]) => number;
+export type BacktestRunner<T> = {
+  config: BacktestConfiguration;
+  onEntry: BacktestTrigger<T>;
+  onExit: BacktestTrigger<T>;
+};
 
 /**
  * Back-tests the strategy over a given dataset.
@@ -40,27 +45,22 @@ export class Backtest<P = unknown, T = number> {
    * @param configuration - `BacktestConfiguration` with trading quantity and capital.
    * @returns `BacktestReport`.
    */
-  run(configuration: BacktestConfiguration) {
-    const { attribute, tradingQuantity } = configuration;
-    const report = new BacktestReport(configuration.capital);
+  run({ config, onEntry, onExit }: BacktestRunner<T>) {
+    const report = new BacktestReport(config.capital);
 
     this._dataset.quotes.forEach((quote: Quote<T>, index, array) => {
       const positionValue = quote.getStrategy(this.strategy.name).position;
-      const attributeValue = attribute
-        ? quote.getAttribute(attribute)
-        : quote.value;
-      const tradeValue = attributeValue * tradingQuantity;
 
       if (
         index === array.length - 1 &&
         (positionValue === 'entry' || positionValue === 'hold')
       ) {
-        report.markExit(tradeValue);
+        report.markExit(onExit(quote, index, array));
       } else {
         if (positionValue === 'entry') {
-          report.markEntry(tradeValue);
+          report.markEntry(onEntry(quote, index, array));
         } else if (positionValue === 'exit') {
-          report.markExit(tradeValue);
+          report.markExit(onExit(quote, index, array));
         }
       }
     });

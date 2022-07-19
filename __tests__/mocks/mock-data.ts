@@ -28,15 +28,17 @@ export const sampleBacktest = {
   ),
   configuration: {
     capital: 100,
-    tradingQuantity: 1,
   },
   report: {
-    _currentCapital: 83,
+    currentCapital: 83,
     finalCapital: 83,
     initialCapital: 100,
     loss: 17,
     numberOfTrades: 1,
     profit: 0,
     returns: -17,
+    numberOfLosingTrades: 1,
+    numberOfWinningTrades: 0,
+    winningRate: 0,
   },
 };
