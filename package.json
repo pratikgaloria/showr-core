@@ -10,7 +10,7 @@
   "scripts": {
     "build": "tsc",
     "prepare": "npm run build",
-    "test": "jest --coverage --no-cache",
+    "test": "jest",
     "test:build": "jest __tests__ --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "docs:generate": "typedoc --options ./typedoc.js",
     "lint": "eslint src --ext .ts",

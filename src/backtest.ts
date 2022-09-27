@@ -46,7 +46,7 @@ export class Backtest<P = unknown, T = number> {
    * @returns `BacktestReport`.
    */
   run({ config, onEntry, onExit }: BacktestRunner<T>) {
-    const report = new BacktestReport(config.capital);
+    const report = new BacktestReport<T>(config.capital);
 
     this._dataset.quotes.forEach((quote: Quote<T>, index, array) => {
       const positionValue = quote.getStrategy(this.strategy.name).position;
@@ -55,12 +55,12 @@ export class Backtest<P = unknown, T = number> {
         index === array.length - 1 &&
         (positionValue === 'entry' || positionValue === 'hold')
       ) {
-        report.markExit(onExit(quote, index, array));
+        report.markExit(onExit(quote, index, array), quote);
       } else {
         if (positionValue === 'entry') {
-          report.markEntry(onEntry(quote, index, array));
+          report.markEntry(onEntry(quote, index, array), quote);
         } else if (positionValue === 'exit') {
-          report.markExit(onExit(quote, index, array));
+          report.markExit(onExit(quote, index, array), quote);
         }
       }
     });

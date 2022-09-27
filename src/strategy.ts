@@ -68,7 +68,7 @@ export class Strategy<P = unknown, T = number, V = unknown> {
   backtest(
     dataset: Dataset<T>,
     runner: BacktestRunner<T>,
-  ): BacktestReport {
+  ): BacktestReport<T> {
     return new Backtest(dataset, this).run(runner);
   }
 }

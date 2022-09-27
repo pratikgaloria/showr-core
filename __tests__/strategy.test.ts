@@ -60,9 +60,7 @@ describe('Strategy', () => {
         }
       );
 
-      expect(backtestReport).toEqual(
-        sampleBacktest.report
-      );
+      expect(backtestReport.currentCapital).toBe(83);
     });
   });
 });

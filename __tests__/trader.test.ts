@@ -29,9 +29,10 @@ describe('Trader', () => {
   describe('tick', () => {
     it('Should calculate a new position for a new quote.', () => {
       const trader = new Trader(dataset, strategy);
-      const newPosition = trader.tick(new Quote(40));
 
-      expect(newPosition).toBe('entry');
+      trader.tick(new Quote(40)).then((strategyValue) => {
+        expect(strategyValue.position).toBe('entry');
+      });
     });
   });
 });

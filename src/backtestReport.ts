@@ -1,7 +1,16 @@
+import { Quote } from "./quote";
+
 /**
  * Creates a back-test report.
  */
-export class BacktestReport {
+type BacktestReportTrades<T> = {
+  type: 'entry' | 'exit';
+  quote: Quote<T>;
+  tradedValue: number;
+  currentCapital: number;
+};
+
+export class BacktestReport<T = number> {
   currentCapital: number;
 
   profit: number;
@@ -13,6 +22,7 @@ export class BacktestReport {
   finalCapital: number;
   returns: number;
   winningRate: number;
+  trades: BacktestReportTrades<T>[];
 
   /**
    * Defines the initial capital for the back-test.
@@ -29,6 +39,7 @@ export class BacktestReport {
 
     this.returns = 0;
     this.winningRate = 0;
+    this.trades = [];
     this.currentCapital = initialCapital;
   }
 
@@ -46,16 +57,18 @@ export class BacktestReport {
    * Updates the capital according to the traded value after executing the entry position.
    * @param tradedValue - Traded value at the time.
    */
-  markEntry(tradedValue: number) {
+  markEntry(tradedValue: number, quote: Quote<T>) {
     this.updateCapital(-tradedValue);
+    this.trades.push({ type: 'entry', quote, tradedValue, currentCapital: this.finalCapital })
   }
 
   /**
    * Updates the capital according to the traded value after executing the exit position.
    * @param tradedValue - Traded value at the time.
    */
-  markExit(tradedValue: number) {
+  markExit(tradedValue: number, quote: Quote<T>) {
     this.updateCapital(tradedValue);
+    this.trades.push({ type: 'exit', quote, tradedValue, currentCapital: this.finalCapital })
     const hasWon = this.finalCapital > this.currentCapital;
 
     if (hasWon) {
