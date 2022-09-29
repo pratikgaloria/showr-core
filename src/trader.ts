@@ -15,7 +15,7 @@ export class Trader<P = unknown, T = number> {
   constructor(initialDataset: Dataset<T>, strategy: Strategy<P, T>) {
     this._strategy = strategy;
     this._dataset = initialDataset;
-    
+
     this._dataset.prepare(strategy);
   }
 
@@ -36,7 +36,7 @@ export class Trader<P = unknown, T = number> {
     return new Promise<StrategyValue | undefined>((resolve, reject) => {
       try {
         this._dataset.add(quote);
-        resolve(this.dataset.at(-1)?.getStrategy(this._strategy.name))
+        resolve(this.dataset.at(-1)?.getStrategy(this._strategy.name));
       } catch (error) {
         reject(error);
       }

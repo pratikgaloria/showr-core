@@ -1,4 +1,4 @@
-import { Quote } from "./quote";
+import { Quote } from './quote';
 
 /**
  * Creates a back-test report.
@@ -59,7 +59,12 @@ export class BacktestReport<T = number> {
    */
   markEntry(tradedValue: number, quote: Quote<T>) {
     this.updateCapital(-tradedValue);
-    this.trades.push({ type: 'entry', quote, tradedValue, currentCapital: this.finalCapital })
+    this.trades.push({
+      type: 'entry',
+      quote,
+      tradedValue,
+      currentCapital: this.finalCapital,
+    });
   }
 
   /**
@@ -68,7 +73,12 @@ export class BacktestReport<T = number> {
    */
   markExit(tradedValue: number, quote: Quote<T>) {
     this.updateCapital(tradedValue);
-    this.trades.push({ type: 'exit', quote, tradedValue, currentCapital: this.finalCapital })
+    this.trades.push({
+      type: 'exit',
+      quote,
+      tradedValue,
+      currentCapital: this.finalCapital,
+    });
     const hasWon = this.finalCapital > this.currentCapital;
 
     if (hasWon) {
@@ -79,7 +89,9 @@ export class BacktestReport<T = number> {
       this.numberOfLosingTrades += 1;
     }
 
-    this.winningRate = this.numberOfWinningTrades / (this.numberOfWinningTrades + this.numberOfLosingTrades);
+    this.winningRate =
+      this.numberOfWinningTrades /
+      (this.numberOfWinningTrades + this.numberOfLosingTrades);
 
     this.currentCapital = this.finalCapital;
     this.updateTotals();

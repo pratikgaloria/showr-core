@@ -1,10 +1,4 @@
-import {
-  Quote,
-  Dataset,
-  Indicator,
-  Backtest,
-  BacktestReport,
-} from './';
+import { Quote, Dataset, Indicator, Backtest, BacktestReport } from './';
 import { BacktestRunner } from './backtest';
 import { TradePositionType } from './position';
 
@@ -35,10 +29,7 @@ export class Strategy<P = unknown, T = number> {
    * @param name - Name of the strategy.
    * @param options - StrategyOptions.
    */
-  constructor(
-    name: string,
-    options: StrategyOptions<P, T>
-  ) {
+  constructor(name: string, options: StrategyOptions<P, T>) {
     this._name = name;
     this._options = options;
   }
@@ -59,12 +50,12 @@ export class Strategy<P = unknown, T = number> {
    */
   apply(quote: Quote<T>, lastPosition: TradePositionType = 'idle') {
     if (lastPosition === 'hold' && this._options.exitWhen(quote)) {
-      return new StrategyValue('exit')
+      return new StrategyValue('exit');
     } else if (this._options.entryWhen(quote)) {
-      return new StrategyValue('entry')
+      return new StrategyValue('entry');
     }
 
-    return new StrategyValue('idle')
+    return new StrategyValue('idle');
   }
 
   /**
@@ -73,10 +64,7 @@ export class Strategy<P = unknown, T = number> {
    * @param configuration - `BacktestConfiguration` that configures the backtest.
    * @returns `BacktestReport`.
    */
-  backtest(
-    dataset: Dataset<T>,
-    runner: BacktestRunner<T>,
-  ): BacktestReport<T> {
+  backtest(dataset: Dataset<T>, runner: BacktestRunner<T>): BacktestReport<T> {
     return new Backtest(dataset, this).run(runner);
   }
 }

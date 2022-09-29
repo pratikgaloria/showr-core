@@ -3,12 +3,12 @@ import { Quote, Indicator, Strategy, StrategyValue, TradePosition } from './';
 export type IndicatorMetadata<T> = {
   name: string;
   indicator: Indicator<unknown, T>;
-}
+};
 
 export type StrategyMetadata<T> = {
   name: string;
   strategy: Strategy<unknown, T>;
-}
+};
 
 /**
  * Creates a dataset out of data, where data is an array of any numeric values.
@@ -88,7 +88,7 @@ export class Dataset<T = number> {
   add(quote: Quote<T>) {
     this.quotes.push(quote);
 
-    this.indicators.forEach(i => {
+    this.indicators.forEach((i) => {
       const quoteWithIndicator = quote.setIndicator(
         i.name,
         i.indicator.calculate(this)
@@ -97,14 +97,19 @@ export class Dataset<T = number> {
       this.mutateAt(-1, quoteWithIndicator);
     });
 
-    this.strategies.forEach(s => {
-      const lastPosition = this.length > 1 ? this.at(-2)?.getStrategy(s.name)?.position ?? 'idle' : 'idle';
+    this.strategies.forEach((s) => {
+      const lastPosition =
+        this.length > 1
+          ? this.at(-2)?.getStrategy(s.name)?.position ?? 'idle'
+          : 'idle';
       const newPosition = s.strategy.apply(quote, lastPosition).position;
-      const updatedPosition = new TradePosition(lastPosition).update(newPosition);
+      const updatedPosition = new TradePosition(lastPosition).update(
+        newPosition
+      );
 
       const quoteWithStrategy = quote.setStrategy(
         s.name,
-        new StrategyValue(updatedPosition.value),
+        new StrategyValue(updatedPosition.value)
       );
 
       this.mutateAt(-1, quoteWithStrategy);
@@ -115,7 +120,7 @@ export class Dataset<T = number> {
 
   /**
    * Mutates the quote at the given position
-   * @param at - number, where 0 is first index, and -1 is the last index. 
+   * @param at - number, where 0 is first index, and -1 is the last index.
    * @param quote - `Quote` to mutate with.
    * @returns self reference.
    */
@@ -136,8 +141,7 @@ export class Dataset<T = number> {
    * @returns value.
    */
   valueAt(position: number, attribute?: string) {
-    const relativePosition =
-      position < 0 ? this.length + position : position;
+    const relativePosition = position < 0 ? this.length + position : position;
 
     return attribute
       ? this.quotes[relativePosition].getAttribute(attribute)
@@ -170,8 +174,10 @@ export class Dataset<T = number> {
     const position = new TradePosition('idle');
     this.quotes.forEach((quote: Quote<T>, index) => {
       const lastQuote = this.at(index - 1);
-      const lastQuotePosition = lastQuote ? lastQuote?.getStrategy(strategy.name)?.position ?? 'idle' : 'idle';
-      
+      const lastQuotePosition = lastQuote
+        ? lastQuote?.getStrategy(strategy.name)?.position ?? 'idle'
+        : 'idle';
+
       position.update(strategy.apply(quote, lastQuotePosition).position);
 
       quote.setStrategy(strategy.name, new StrategyValue(position.value));

@@ -6,7 +6,11 @@ export interface BacktestConfiguration {
   name?: string;
 }
 
-export type BacktestTrigger<T> = (quote: Quote<T>, index: number, quotes: Quote<T>[]) => number;
+export type BacktestTrigger<T> = (
+  quote: Quote<T>,
+  index: number,
+  quotes: Quote<T>[]
+) => number;
 export type BacktestRunner<T> = {
   config: BacktestConfiguration;
   onEntry: BacktestTrigger<T>;
@@ -56,18 +60,18 @@ export class Backtest<P = unknown, T = number> {
         (positionValue === 'entry' || positionValue === 'hold')
       ) {
         report.markExit(onExit(quote, index, array), quote);
-        if(this._strategy.options.onTrigger) {
+        if (this._strategy.options.onTrigger) {
           this._strategy.options.onTrigger('exit', quote);
         }
       } else {
         if (positionValue === 'entry') {
           report.markEntry(onEntry(quote, index, array), quote);
-          if(this._strategy.options.onTrigger) {
+          if (this._strategy.options.onTrigger) {
             this._strategy.options.onTrigger('entry', quote);
           }
         } else if (positionValue === 'exit') {
           report.markExit(onExit(quote, index, array), quote);
-          if(this._strategy.options.onTrigger) {
+          if (this._strategy.options.onTrigger) {
             this._strategy.options.onTrigger('exit', quote);
           }
         }

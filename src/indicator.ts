@@ -60,7 +60,7 @@ export class Indicator<P, T = number> {
     }
 
     const emptyDataset = new Dataset<T>();
-    dataset.quotes.forEach(quote => {
+    dataset.quotes.forEach((quote) => {
       const quoteWithIndicator = quote.setIndicator(
         this.name,
         this.calculate(emptyDataset.add(quote))
