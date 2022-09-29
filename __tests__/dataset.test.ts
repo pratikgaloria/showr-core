@@ -1,5 +1,4 @@
-//import '@types/jest';
-import { Dataset, Quote, Indicator, Strategy, StrategyValue } from '../src';
+import { Dataset, Quote, Indicator, Strategy } from '../src';
 import { IndicatorMetadata, StrategyMetadata } from '../src/dataset';
 import { sampleIndicatorFn, sampleStrategy } from './mocks/mock-data';
 
@@ -65,8 +64,12 @@ describe('Dataset', () => {
       const dataset = new Dataset([1, 2, 3]);
       const sma2 = new Indicator('sma2', sampleIndicatorFn);
       const strategyMetadata: StrategyMetadata<number> = {
-        strategy: new Strategy('buy-above-sma', () => new StrategyValue('entry'), [sma2]),
-        name: 'sma2'
+        strategy: new Strategy('buy-above-sma', {
+          entryWhen: () => true,
+          exitWhen: () => false,
+          indicators: [sma2],
+        }),
+        name: 'buy-above-sma'
       };
 
       dataset.setStrategy(strategyMetadata);
@@ -78,19 +81,19 @@ describe('Dataset', () => {
     const dataset = new Dataset([1, 2, 3]);
 
     it('Should return first quote if called with 0.', () => {
-      expect(dataset.at(0).value).toBe(1);
+      expect(dataset.at(0)?.value).toBe(1);
     });
 
     it('Should return second quote if called with 1.', () => {
-      expect(dataset.at(1).value).toBe(2);
+      expect(dataset.at(1)?.value).toBe(2);
     });
 
     it('Should return last quote if called with -1.', () => {
-      expect(dataset.at(-1).value).toBe(3);
+      expect(dataset.at(-1)?.value).toBe(3);
     });
 
     it('Should return second last quote if called with -2.', () => {
-      expect(dataset.at(-2).value).toBe(2);
+      expect(dataset.at(-2)?.value).toBe(2);
     });
 
     it('Should return undefined for invalid index.', () => {
@@ -127,7 +130,7 @@ describe('Dataset', () => {
       const quote = new Quote(2);
       dataset.add(quote);
 
-      expect(dataset.quotes[0].getStrategy('sample-strategy').position).toBe('entry');
+      expect(dataset.quotes[0].getStrategy('sample-strategy')?.position).toBe('entry');
     });
 
     it('Should apply a strategy to the new Quote based on the previous quote', () => {
@@ -137,7 +140,7 @@ describe('Dataset', () => {
       const quote = new Quote(2);
       dataset.add(quote);
 
-      expect(dataset.quotes[1].getStrategy('sample-strategy').position).toBe('hold');
+      expect(dataset.quotes[1].getStrategy('sample-strategy')?.position).toBe('hold');
     });
   });
 
@@ -149,7 +152,7 @@ describe('Dataset', () => {
       dataset.apply(indicator);
 
       expect(dataset.quotes).toHaveLength(1);
-      expect(dataset.at(0).getIndicator('multi5')).toBe(5);
+      expect(dataset.at(0)?.getIndicator('multi5')).toBe(5);
       expect(dataset.indicators).toStrictEqual([{
         name: 'multi5',
         indicator
@@ -169,10 +172,10 @@ describe('Dataset', () => {
 
       dataset.apply(add2, min1);
 
-      expect(dataset.at(0).getIndicator('add2')).toBe(7);
-      expect(dataset.at(0).getIndicator('min1')).toBe(4);
-      expect(dataset.at(1).getIndicator('add2')).toBe(12);
-      expect(dataset.at(1).getIndicator('min1')).toBe(9);
+      expect(dataset.at(0)?.getIndicator('add2')).toBe(7);
+      expect(dataset.at(0)?.getIndicator('min1')).toBe(4);
+      expect(dataset.at(1)?.getIndicator('add2')).toBe(12);
+      expect(dataset.at(1)?.getIndicator('min1')).toBe(9);
 
       expect(dataset.indicators).toStrictEqual([
         {
@@ -191,11 +194,15 @@ describe('Dataset', () => {
     it('Should prepare the dataset by applying a given strategy.', () => {
       const dataset = new Dataset([5, 10]);
       const indicator = new Indicator('sma2', sampleIndicatorFn);
-      const strategy = new Strategy('sample-strategy', () => new StrategyValue('entry'), [indicator]);
+      const strategy = new Strategy('sample-strategy', {
+        entryWhen: () => true,
+        exitWhen: () => false,
+        indicators: [indicator]
+      });
       dataset.prepare(strategy);
 
-      expect(dataset.quotes[0].getStrategy('sample-strategy').position).toBe('entry');
-      expect(dataset.quotes[1].getStrategy('sample-strategy').position).toBe('hold');
+      expect(dataset.quotes[0].getStrategy('sample-strategy')?.position).toBe('entry');
+      expect(dataset.quotes[1].getStrategy('sample-strategy')?.position).toBe('hold');
       
       expect(dataset.strategies).toStrictEqual([{
         name: 'sample-strategy',

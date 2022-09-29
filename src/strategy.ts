@@ -8,55 +8,63 @@ import {
 import { BacktestRunner } from './backtest';
 import { TradePositionType } from './position';
 
-export class StrategyValue<V = unknown> {
+export class StrategyValue {
   position: TradePositionType | undefined;
-  meta?: V;
 
-  constructor(position: TradePositionType | undefined, meta?: V) {
+  constructor(position: TradePositionType | undefined) {
     this.position = position;
-    this.meta = meta;
   }
+}
+
+export interface StrategyOptions<P, T> {
+  entryWhen: (quote: Quote<T>) => boolean;
+  exitWhen: (quote: Quote<T>) => boolean;
+  indicators?: Indicator<P, T>[];
+  onTrigger?: (positionType: TradePositionType, quote: Quote<T>) => void;
 }
 
 /**
  * Defines a strategy that can be back-tested.
  */
-export class Strategy<P = unknown, T = number, V = unknown> {
+export class Strategy<P = unknown, T = number> {
   protected _name: string;
-  protected _define: (quote: Quote<T>) => StrategyValue<V> | undefined;
-  protected _indicators: Indicator<P, T>[];
+  protected _options: StrategyOptions<P, T>;
 
   /**
    * Creates a strategy with definition and indicators.
    * @param name - Name of the strategy.
-   * @param define - Strategy definition function that accepts a `Quote` and returns a `PositionType`.
-   * @param indicators - Array of `Indicator` that can be used to determine the position in this strategy.
+   * @param options - StrategyOptions.
    */
   constructor(
     name: string,
-    define: (quote: Quote<T>) => StrategyValue<V> | undefined,
-    indicators: Indicator<P, T>[]
+    options: StrategyOptions<P, T>
   ) {
     this._name = name;
-    this._define = define;
-    this._indicators = indicators;
+    this._options = options;
   }
 
   get name() {
     return this._name;
   }
 
-  get indicators() {
-    return this._indicators;
+  get options() {
+    return this._options;
   }
 
   /**
    * Applies the strategy over a given quote and returns the strategy values.
    * @param quote - `Quote` on which strategy should be applied.
-   * @returns `StrategyPoint`.
+   * @param lastPosition - TradePositionType of the last quote.
+   * @returns `StrategyValue`.
    */
-  apply(quote: Quote<T>) {
-    return this._define(quote);
+  apply(quote: Quote<T>, lastPosition: TradePositionType = 'idle') {
+    if (lastPosition === 'hold' && this._options.exitWhen(quote)) {
+      return new StrategyValue('exit')
+    } else if (this._options.entryWhen(quote)) {
+      return new StrategyValue('entry')
+    }
+
+    return new StrategyValue('idle')
   }
 
   /**

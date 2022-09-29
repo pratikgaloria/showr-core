@@ -1,4 +1,4 @@
-import { Strategy, Indicator, Dataset, Quote, StrategyValue } from '../src';
+import { Strategy, Indicator, Dataset, Quote } from '../src';
 import { sampleStrategy, sampleBacktest } from './mocks/mock-data';
 
 describe('Strategy', () => {
@@ -9,8 +9,8 @@ describe('Strategy', () => {
       expect(strategy).toHaveProperty('name');
       expect(strategy.name).toBe('new-strategy');
 
-      expect(strategy).toHaveProperty('indicators');
-      expect(strategy.indicators).toHaveLength(1);
+      expect(strategy).toHaveProperty('options');
+      expect(strategy.options.indicators).toHaveLength(1);
     });
   });
 
@@ -22,7 +22,11 @@ describe('Strategy', () => {
 
     it('Should apply strategy over a given Quote', () => {
       const strategyFn = jest.fn();
-      const strategy = new Strategy('strategy', strategyFn, [indicator]);
+      const strategy = new Strategy('strategy', {
+        entryWhen: strategyFn,
+        exitWhen: () => false,
+        indicators: [indicator]
+      });
 
       const quote = new Quote(1);
       quote.setIndicator('indicator', 2);
@@ -32,18 +36,6 @@ describe('Strategy', () => {
       expect(strategyFn).toHaveBeenCalled();
       expect(strategyFn).toHaveBeenCalledWith(quote);
     });
-
-    it('Should be able to set metadata along with the strategy value', () => {
-      const strategy = new Strategy('strategy', () => new StrategyValue('entry', { price: 'open' }), [indicator]);
-
-      const quote = new Quote(1);
-      quote.setIndicator('indicator', 2);
-
-      const value = strategy.apply(quote);
-
-      expect(value?.position).toBe('entry');
-      expect(value?.meta?.price).toBe('open');
-    })
   });
 
   describe('backtest', () => {

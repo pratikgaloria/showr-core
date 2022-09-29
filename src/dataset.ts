@@ -72,7 +72,7 @@ export class Dataset<T = number> {
    * @param position - number, where 0 is first index, and -1 is the last index.
    * @returns - `Quote` if found or undefined.
    */
-  at(position: number) {
+  at(position: number): Quote<T> | undefined {
     if (position < 0) {
       return this.quotes[this.length + position];
     } else {
@@ -98,8 +98,8 @@ export class Dataset<T = number> {
     });
 
     this.strategies.forEach(s => {
-      const lastPosition = this.length > 1 ? this.at(-2).getStrategy(s.name).position ?? 'idle' : 'idle';
-      const newPosition = s.strategy.apply(quote)?.position;
+      const lastPosition = this.length > 1 ? this.at(-2)?.getStrategy(s.name)?.position ?? 'idle' : 'idle';
+      const newPosition = s.strategy.apply(quote, lastPosition).position;
       const updatedPosition = new TradePosition(lastPosition).update(newPosition);
 
       const quoteWithStrategy = quote.setStrategy(
@@ -163,11 +163,16 @@ export class Dataset<T = number> {
   }
 
   prepare(strategy: Strategy<unknown, T>) {
-    this.apply(...strategy.indicators);
+    if (strategy.options.indicators) {
+      this.apply(...strategy.options.indicators);
+    }
 
     const position = new TradePosition('idle');
-    this.quotes.forEach((quote: Quote<T>) => {
-      position.update(strategy.apply(quote)?.position);
+    this.quotes.forEach((quote: Quote<T>, index) => {
+      const lastQuote = this.at(index - 1);
+      const lastQuotePosition = lastQuote ? lastQuote?.getStrategy(strategy.name)?.position ?? 'idle' : 'idle';
+      
+      position.update(strategy.apply(quote, lastQuotePosition).position);
 
       quote.setStrategy(strategy.name, new StrategyValue(position.value));
     });

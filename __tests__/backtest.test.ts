@@ -11,10 +11,12 @@ describe('Backtest', () => {
     it('Should run back-test over a given dataset for a given strategy.', async () => {
       const backtest = new Backtest(dataset, strategy);
 
-      expect(backtest.dataset.strategies).toStrictEqual([{
-        name: strategy.name,
-        strategy,
-      }])
+      expect(backtest.dataset.strategies).toStrictEqual([
+        {
+          name: strategy.name,
+          strategy,
+        },
+      ]);
     });
   });
 
@@ -49,22 +51,23 @@ describe('Backtest', () => {
     });
 
     it('Should run over a dataset with objects.', () => {
-      const dataset2 = new Dataset(sampleBacktest.dataset.map(v => ({ close: v })));
+      const dataset2 = new Dataset(
+        sampleBacktest.dataset.map((v) => ({ close: v }))
+      );
 
-      const strategy2 = new Strategy(
-        'close-strategy',
-        (quote: Quote<{ close: number }>) => {
+      const strategy2 = new Strategy<unknown, { close: number }>('close-strategy', {
+        entryWhen: (quote) => {
           const sma2 = quote.getIndicator('sma2');
 
-          if (!!sma2 && sma2 > 25) {
-            return new StrategyValue('entry');
-          }
-          if (!!sma2 && sma2 < 25) {
-            return new StrategyValue('exit');
-          }
+          return !!sma2 && sma2 > 25;
         },
-        [new SMA('sma2', { period: 2, attribute: 'close' })]
-      );
+        exitWhen: (quote) => {
+          const sma2 = quote.getIndicator('sma2');
+
+          return !!sma2 && sma2 < 25;
+        },
+        indicators: [new SMA('sma2', { period: 2, attribute: 'close' })],
+      });
 
       const backtest = new Backtest(dataset2, strategy2);
       const backtestReport = backtest.run({

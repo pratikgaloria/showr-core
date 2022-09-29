@@ -3,16 +3,16 @@ import { Dataset, Quote, Strategy, StrategyValue } from './';
 /**
  * Outputs trading signals based on a strategy over a live feed
  */
-export class Trader<P = unknown, T = number, V = unknown> {
+export class Trader<P = unknown, T = number> {
   protected _dataset: Dataset<T>;
-  protected _strategy: Strategy<P, T, V>;
+  protected _strategy: Strategy<P, T>;
 
   /**
    * Applies a given strategy over an initial dataset.
    * @param initialDataset - Initial `Dataset` over which the given strategy should be applied.
    * @param strategy - `Strategy` that should be applied.
    */
-  constructor(initialDataset: Dataset<T>, strategy: Strategy<P, T, V>) {
+  constructor(initialDataset: Dataset<T>, strategy: Strategy<P, T>) {
     this._strategy = strategy;
     this._dataset = initialDataset;
     
@@ -33,10 +33,10 @@ export class Trader<P = unknown, T = number, V = unknown> {
    * @returns a promise that resolves with StrategyValue.
    */
   tick(quote: Quote<T>) {
-    return new Promise<StrategyValue>((resolve, reject) => {
+    return new Promise<StrategyValue | undefined>((resolve, reject) => {
       try {
         this._dataset.add(quote);
-        resolve(this.dataset.at(-1).getStrategy(this._strategy.name))
+        resolve(this.dataset.at(-1)?.getStrategy(this._strategy.name))
       } catch (error) {
         reject(error);
       }

@@ -87,7 +87,7 @@ export class Quote<T = number> {
    * @param strategyName - Name of the strategy.
    * @returns `StrategyPoint` object if strategy exists, `undefined` otherwise.
    */
-  getStrategy(strategyName: string) {
+  getStrategy(strategyName: string): StrategyValue | undefined {
     return this._strategies[strategyName];
   }
 
