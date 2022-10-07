@@ -1,12 +1,12 @@
 import { Dataset, Indicator } from '../../src';
 
-interface IIndicatorParamsSMA {
+interface IIndicatorParamsSMA<T> {
   period?: number;
   attribute?: string;
 }
 
-export class SMA<T = number> extends Indicator<IIndicatorParamsSMA, T> {
-  constructor(name: string = 'SMA', params?: IIndicatorParamsSMA) {
+export class SMA<T = number> extends Indicator<IIndicatorParamsSMA<T>, T> {
+  constructor(name: string = 'SMA', params?: IIndicatorParamsSMA<T>) {
     super(
       name,
       function(dataset: Dataset<T>) {

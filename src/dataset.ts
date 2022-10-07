@@ -1,4 +1,7 @@
-import { Quote, Indicator, Strategy, StrategyValue, TradePosition } from './';
+import { Indicator, Strategy } from './';
+import { TradePosition } from './position';
+import { Quote } from './quote';
+import { StrategyValue } from './strategy';
 
 export type IndicatorMetadata<T> = {
   name: string;
@@ -72,7 +75,7 @@ export class Dataset<T = number> {
    * @param position - number, where 0 is first index, and -1 is the last index.
    * @returns - `Quote` if found or undefined.
    */
-  at(position: number): Quote<T> | undefined {
+  at(position: number) {
     if (position < 0) {
       return this.quotes[this.length + position];
     } else {
@@ -166,6 +169,10 @@ export class Dataset<T = number> {
     return this;
   }
 
+  /**
+   * Applies given strategy (and its indicators) over the dataset.
+   * @param strategy: `Strategy` to apply.
+   */
   prepare(strategy: Strategy<unknown, T>) {
     if (strategy.options.indicators) {
       this.apply(...strategy.options.indicators);

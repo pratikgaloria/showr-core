@@ -12,8 +12,8 @@ import { StrategyValue } from './strategy';
  */
 export class Quote<T = number> {
   private _value: T;
-  private _indicators: { [key: string]: number };
-  private _strategies: { [key: string]: StrategyValue };
+  private _indicators: { [key: string | number]: number };
+  private _strategies: { [key: string | number]: StrategyValue };
 
   /**
    * Creates a quote after type-casting the given value.
@@ -87,7 +87,7 @@ export class Quote<T = number> {
    * @param strategyName - Name of the strategy.
    * @returns `StrategyPoint` object if strategy exists, `undefined` otherwise.
    */
-  getStrategy(strategyName: string): StrategyValue | undefined {
+  getStrategy(strategyName: string) {
     return this._strategies[strategyName];
   }
 

@@ -1,5 +1,6 @@
-import { Dataset, Quote, Indicator, Strategy } from '../src';
+import { Dataset, Indicator, Strategy } from '../src';
 import { IndicatorMetadata, StrategyMetadata } from '../src/dataset';
+import { Quote } from '../src/quote'
 import { sampleIndicatorFn, sampleStrategy } from './mocks/mock-data';
 
 describe('Dataset', () => {

@@ -1,4 +1,5 @@
-import { Dataset, Quote, Indicator, Backtest } from '../src';
+import { Dataset, Indicator, Backtest } from '../src';
+import { Quote } from '../src/quote';
 import { StrategyValue } from '../src/strategy';
 import { sampleIndicatorFn, sampleStrategy } from './mocks/mock-data';
 
@@ -110,7 +111,7 @@ describe('Quote', () => {
     });
 
     it('Should return undefined if attribute doesn\'t exists.', () => {
-      const dataset = new Dataset([1, 2]);
+      const dataset = new Dataset<{ open?: Number, close: number }>([{ close: 1 }, { close: 3 }]);
 
       dataset.quotes.forEach(q => {
         expect(q.getAttribute('open')).toBeUndefined();

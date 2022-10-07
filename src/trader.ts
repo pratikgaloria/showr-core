@@ -1,4 +1,6 @@
-import { Dataset, Quote, Strategy, StrategyValue } from './';
+import { Dataset, Strategy } from './';
+import { Quote } from './quote';
+import { StrategyValue } from './strategy';
 
 /**
  * Outputs trading signals based on a strategy over a live feed
@@ -32,10 +34,10 @@ export class Trader<P = unknown, T = number> {
    * @param quote new `Quote`.
    * @returns a promise that resolves with StrategyValue.
    */
-  tick(quote: Quote<T>) {
+  tick(quote: T) {
     return new Promise<StrategyValue | undefined>((resolve, reject) => {
       try {
-        this._dataset.add(quote);
+        this._dataset.add(new Quote(quote));
         resolve(this.dataset.at(-1)?.getStrategy(this._strategy.name));
       } catch (error) {
         reject(error);

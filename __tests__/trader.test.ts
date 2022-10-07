@@ -1,5 +1,4 @@
-import { Dataset, Indicator, Quote, Strategy, Trader } from '../src';
-import { StrategyValue } from '../src/strategy';
+import { Dataset, Indicator, Strategy, Trader } from '../src';
 
 describe('Trader', () => {
   const dataset = new Dataset([20, 25, 22, 28, 35, 30, 25, 18, 15]);
@@ -38,7 +37,7 @@ describe('Trader', () => {
     it('Should calculate a new position for a new quote.', () => {
       const trader = new Trader(dataset, strategy);
 
-      trader.tick(new Quote(40)).then((strategyValue) => {
+      trader.tick(40).then((strategyValue) => {
         expect(strategyValue?.position).toBe('entry');
       });
     });

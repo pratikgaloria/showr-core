@@ -1,5 +1,6 @@
-import { Dataset, Quote, Strategy } from './';
+import { Dataset, Strategy } from './';
 import { BacktestReport } from './backtestReport';
+import { Quote } from './quote';
 
 export interface BacktestConfiguration {
   capital: number;

@@ -1,4 +1,4 @@
-import { TradePosition } from '../src';
+import { TradePosition } from '../src/position';
 
 describe('Position', () => {
   describe('constructor', () => {

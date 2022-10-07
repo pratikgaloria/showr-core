@@ -1,4 +1,5 @@
-import { BacktestReport, Quote } from '../src';
+import { BacktestReport } from '../src';
+import { Quote } from '../src/quote';
 
 describe('BacktestReport', () => {
   describe('constructor', () => {

@@ -1,8 +1,6 @@
 export { Dataset } from './dataset';
-export { Quote } from './quote';
 export { Indicator, IndicatorOptions } from './indicator';
-export { Strategy, StrategyValue } from './strategy';
+export { Strategy } from './strategy';
 export { Backtest, BacktestConfiguration } from './backtest';
 export { Trader } from './trader';
 export { BacktestReport } from './backtestReport';
-export { TradePosition } from './position';

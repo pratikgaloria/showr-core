@@ -41,6 +41,11 @@ export class Indicator<P, T = number> {
     return this._options?.params;
   }
 
+  /**
+   * Calculates an indicator over a given dataset
+   * @param dataset - `Dataset`.
+   * @returns the value of indicator.
+   */
   calculate(dataset: Dataset<T>) {
     if (this.options?.beforeCalculate) {
       this.options.beforeCalculate(dataset);
@@ -52,7 +57,7 @@ export class Indicator<P, T = number> {
   /**
    * Mutates each quote of the given dataset with a calculated indicator value.
    * @param dataset - `Dataset`.
-   * @returns Mutated `Dataset`.
+   * @returns `Dataset`.
    */
   spread(dataset: Dataset<T>) {
     if (this.options && this.options.beforeCalculate) {

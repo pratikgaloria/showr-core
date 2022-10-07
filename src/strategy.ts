@@ -1,6 +1,7 @@
-import { Quote, Dataset, Indicator, Backtest, BacktestReport } from './';
+import { Dataset, Indicator, Backtest, BacktestReport } from './';
 import { BacktestRunner } from './backtest';
 import { TradePositionType } from './position';
+import { Quote } from './quote';
 
 export class StrategyValue {
   position: TradePositionType | undefined;
