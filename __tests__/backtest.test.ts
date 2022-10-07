@@ -73,8 +73,8 @@ describe('Backtest', () => {
       const backtest = new Backtest(dataset2, strategy2);
       const backtestReport = backtest.run({
         config: { capital: 100 },
-        onEntry: (quote) => quote.getAttribute('close') * 1,
-        onExit: (quote) => quote.getAttribute('close') * 1,
+        onEntry: (quote) => quote.value.close * 1,
+        onExit: (quote) => quote.value.close * 1,
       });
 
       expect(backtestReport.numberOfTrades).toBe(1);

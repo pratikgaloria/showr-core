@@ -101,24 +101,6 @@ describe('Quote', () => {
     });
   });
 
-  describe('getAttribute', () => {
-    it('Should return attribute value if exists.', () => {
-      const dataset = new Dataset([{ open: 1 }, { open: 3 }]);
-
-      dataset.quotes.forEach(q => {
-        expect(q.getAttribute('open')).toBe(q.value.open);
-      });
-    });
-
-    it('Should return undefined if attribute doesn\'t exists.', () => {
-      const dataset = new Dataset<{ open?: Number, close: number }>([{ close: 1 }, { close: 3 }]);
-
-      dataset.quotes.forEach(q => {
-        expect(q.getAttribute('open')).toBeUndefined();
-      });
-    });
-  });
-
   describe('getStrategy', () => {
     it('Should return strategy point for if exists.', () => {
       const dataset = new Dataset([1, 2]);

@@ -147,7 +147,7 @@ export class Dataset<T = number> {
     const relativePosition = position < 0 ? this.length + position : position;
 
     return attribute
-      ? this.quotes[relativePosition].getAttribute(attribute)
+      ? this.quotes[relativePosition].value[attribute]
       : this.quotes[relativePosition].value;
   }
 
@@ -202,8 +202,6 @@ export class Dataset<T = number> {
    * @returns flatten array.
    */
   flatten(attribute?: string) {
-    return this.quotes.map((q) =>
-      attribute ? q.getAttribute(attribute) : q.value
-    );
+    return this.quotes.map((q) => (attribute ? q.value[attribute] : q.value));
   }
 }

@@ -53,15 +53,6 @@ export class Quote<T = number> {
   }
 
   /**
-   * Get value of the given attribute of the quote.
-   * @param attribute - The attribute.
-   * @returns The value of given attribute if exists, `undefined` otherwise.
-   */
-  getAttribute(attribute: string) {
-    return this._value[attribute];
-  }
-
-  /**
    * Get quote indicator value by indicator name.
    * @param indicatorName - Name of the `Indicator`.
    * @returns Value of indicator if exists, `undefined` otherwise.

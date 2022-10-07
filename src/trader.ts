@@ -35,7 +35,7 @@ export class Trader<P = unknown, T = number> {
    * @returns a promise that resolves with StrategyValue.
    */
   tick(quote: T) {
-    return new Promise<StrategyValue | undefined>((resolve, reject) => {
+    return new Promise<StrategyValue>((resolve, reject) => {
       try {
         this._dataset.add(new Quote(quote));
         resolve(this.dataset.at(-1)?.getStrategy(this._strategy.name));

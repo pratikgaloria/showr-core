@@ -16,7 +16,7 @@ export class SMA<T = number> extends Indicator<IIndicatorParamsSMA<T>, T> {
         if (datasetLength < period) {
           return Number(
             params?.attribute
-              ? dataset.at(-1)?.getAttribute(params.attribute)
+              ? dataset.at(-1)?.value[params.attribute]
               : dataset.at(-1)?.value
           );
         }
@@ -25,7 +25,7 @@ export class SMA<T = number> extends Indicator<IIndicatorParamsSMA<T>, T> {
         for (let i = datasetLength - period; i < datasetLength; i++) {
           total += Number(
             params?.attribute
-              ? dataset.at(i)?.getAttribute(params.attribute)
+              ? dataset.at(i)?.value[params.attribute]
               : dataset.at(i)?.value
           );
         }
