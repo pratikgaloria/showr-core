@@ -32,19 +32,20 @@ export const newTradingPositionMap: {
 };
 
 export class TradePosition {
-  protected _type: TradePositionType;
+  protected _value: TradePositionType;
 
-  constructor(type: TradePositionType) {
-    this._type = type;
+  constructor(value: TradePositionType) {
+    this._value = value;
   }
 
   get value() {
-    return this._type;
+    return this._value;
   }
 
-  update(newPosition?: TradePositionType) {
-    this._type = newTradingPositionMap[this._type][newPosition ?? this._type];
-
-    return this;
+  static update(
+    oldPosition: TradePositionType,
+    newPosition: TradePositionType
+  ) {
+    return newTradingPositionMap[oldPosition][newPosition];
   }
 }

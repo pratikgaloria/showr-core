@@ -106,13 +106,11 @@ export class Dataset<T = number> {
           ? this.at(-2)?.getStrategy(s.name)?.position ?? 'idle'
           : 'idle';
       const newPosition = s.strategy.apply(quote, lastPosition).position;
-      const updatedPosition = new TradePosition(lastPosition).update(
-        newPosition
-      );
+      const updatedPosition = TradePosition.update(lastPosition, newPosition);
 
       const quoteWithStrategy = quote.setStrategy(
         s.name,
-        new StrategyValue(updatedPosition.value)
+        new StrategyValue(updatedPosition)
       );
 
       this.mutateAt(-1, quoteWithStrategy);
@@ -178,18 +176,16 @@ export class Dataset<T = number> {
       this.apply(...strategy.options.indicators);
     }
 
-    const position = new TradePosition('idle');
     this.quotes.forEach((quote: Quote<T>, index) => {
       const lastQuote = this.at(index - 1);
       const lastQuotePosition = lastQuote
         ? lastQuote?.getStrategy(strategy.name)?.position ?? 'idle'
         : 'idle';
 
-      position.update(strategy.apply(quote, lastQuotePosition).position);
-
-      strategy.options.onTrigger?.(position.value, quote);
-
-      quote.setStrategy(strategy.name, new StrategyValue(position.value));
+      quote.setStrategy(
+        strategy.name,
+        strategy.apply(quote, lastQuotePosition)
+      );
     });
 
     this.setStrategy({

@@ -1,3 +1,4 @@
+//import '@types/jest';
 import { Indicator, Dataset } from '../src';
 import { sampleIndicatorFn } from './mocks/mock-data';
 

@@ -1,12 +1,12 @@
 import { Dataset, Indicator, Backtest, BacktestReport } from './';
 import { BacktestRunner } from './backtest';
-import { TradePositionType } from './position';
+import { TradePosition, TradePositionType } from './position';
 import { Quote } from './quote';
 
 export class StrategyValue {
-  position: TradePositionType | undefined;
+  position: TradePositionType;
 
-  constructor(position: TradePositionType | undefined) {
+  constructor(position: TradePositionType = 'idle') {
     this.position = position;
   }
 }
@@ -50,16 +50,21 @@ export class Strategy<P = unknown, T = number> {
    * @returns `StrategyValue`.
    */
   apply(quote: Quote<T>, lastPosition: TradePositionType = 'idle') {
+    let newPosition: TradePositionType = 'idle';
+
     if (
       (lastPosition === 'hold' || lastPosition === 'entry') &&
       this._options.exitWhen(quote)
     ) {
-      return new StrategyValue('exit');
+      newPosition = 'exit';
     } else if (this._options.entryWhen(quote)) {
-      return new StrategyValue('entry');
+      newPosition = 'entry';
     }
 
-    return new StrategyValue('idle');
+    const updatedPosition = TradePosition.update(lastPosition, newPosition);
+    this._options.onTrigger?.(updatedPosition, quote);
+
+    return new StrategyValue(updatedPosition);
   }
 
   /**

@@ -1,3 +1,4 @@
+//import '@types/jest';
 import { Dataset, Indicator, Strategy } from '../src';
 import { IndicatorMetadata, StrategyMetadata } from '../src/dataset';
 import { Quote } from '../src/quote'

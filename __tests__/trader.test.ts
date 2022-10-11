@@ -1,3 +1,4 @@
+//import '@types/jest';
 import { Dataset, Indicator, Strategy, Trader } from '../src';
 
 describe('Trader', () => {

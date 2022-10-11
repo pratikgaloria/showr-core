@@ -1,3 +1,4 @@
+//import '@types/jest';
 import { BacktestReport } from '../src';
 import { Quote } from '../src/quote';
 
