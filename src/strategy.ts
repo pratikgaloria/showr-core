@@ -50,7 +50,10 @@ export class Strategy<P = unknown, T = number> {
    * @returns `StrategyValue`.
    */
   apply(quote: Quote<T>, lastPosition: TradePositionType = 'idle') {
-    if (lastPosition === 'hold' && this._options.exitWhen(quote)) {
+    if (
+      (lastPosition === 'hold' || lastPosition === 'entry') &&
+      this._options.exitWhen(quote)
+    ) {
       return new StrategyValue('exit');
     } else if (this._options.entryWhen(quote)) {
       return new StrategyValue('entry');

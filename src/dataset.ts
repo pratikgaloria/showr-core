@@ -187,6 +187,8 @@ export class Dataset<T = number> {
 
       position.update(strategy.apply(quote, lastQuotePosition).position);
 
+      strategy.options.onTrigger?.(position.value, quote);
+
       quote.setStrategy(strategy.name, new StrategyValue(position.value));
     });
 
